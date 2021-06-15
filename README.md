@@ -19,6 +19,8 @@ prompt-at! ([] 100 100)
     :initial |TODO
   fn (content)
     println content
+
+clear-prompt!
 ```
 
 ### License

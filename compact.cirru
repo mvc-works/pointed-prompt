@@ -2,7 +2,7 @@
 {} (:package |pointed-prompt)
   :configs $ {} (:init-fn |pointed-prompt.app.main/main!) (:reload-fn |pointed-prompt.app.main/reload!)
     :modules $ []
-    :version |0.0.1
+    :version |0.0.2
   :files $ {}
     |pointed-prompt.core $ {}
       :ns $ quote
@@ -37,6 +37,7 @@
                 x $ nth position 0
                 y $ nth position 1
                 close $ js/document.createElement "\"span"
+                width $ if textarea? 320 240
               if (some? @*box-root) (.!remove @*box-root)
               reset! *box-root root
               .!appendChild root input
@@ -46,26 +47,25 @@
                 set! (.-innerText submit) "\"Ok"
                 .!appendChild root control
               set! (.-style root)
-                style->string $ to-pairs
-                  merge layout-row style-container
-                    {} (:top y) (:left x)
-                    if textarea? $ {} (:width 320)
-                    if
-                      < (- js/window.innerWidth x) 240
-                      {} (:left nil) (:right 8)
-                    if
-                      < (- js/window.innerHeight y) 70
-                      {} (:top nil) (:bottom 8)
+                style->string $ merge layout-row style-container
+                  {} (:top y) (:left x) (:width width)
+                  if
+                    < (- js/window.innerWidth x) width
+                    {} (:left nil) (:right 8)
+                  if
+                    < (- js/window.innerHeight y) 70
+                    {} (:top nil) (:bottom 8)
+              set!
+                .-createdTime $ .-dataset root
+                str $ js/window.performance.now
               set! (.-style input)
-                style->string $ to-pairs
-                  merge layout-expand style-input
-                    if textarea? $ {} (:height 80)
-                    :style options
+                style->string $ merge layout-expand style-input
+                  if textarea? $ {} (:height 80)
+                  :style options
               set! (.-style control)
-                style->string $ to-pairs
-                  merge layout-column $ {} (:justify-content :space-evenly)
-              set! (.-style close)
-                style->string $ to-pairs style-close
+                style->string $ merge layout-column
+                  {} $ :justify-content :space-evenly
+              set! (.-style close) (style->string style-close)
               set! (.-placeholder input)
                 either (:placeholder options) "\"text..."
               set! (.-value input)
@@ -81,13 +81,20 @@
                   .!remove root
               .!addEventListener close "\"click" $ fn (event) (.!remove root)
               when textarea?
-                set! (.-style submit)
-                  style->string $ to-pairs style-submit
+                set! (.-style submit) (style->string style-submit)
                 .!addEventListener submit "\"click" $ fn (event)
                   cb $ .-value input
                   .!remove root
               .!appendChild js/document.body root
               .!select input
+        |clear-prompt! $ quote
+          defn clear-prompt! () $ if (some? @*box-root)
+            let
+                created $ if (some? @*box-root)
+                  js/parseFloat $ .-createdTime (.-dataset @*box-root)
+                  , 0
+                duration $ - (js/window.performance.now) created
+              if (> duration 100) (.!remove @*box-root)
       :proc $ quote ()
     |pointed-prompt.util.styles $ {}
       :ns $ quote (ns pointed-prompt.util.styles)
@@ -140,15 +147,20 @@
     |pointed-prompt.app.main $ {}
       :ns $ quote
         ns pointed-prompt.app.main $ :require
-          pointed-prompt.core :refer $ prompt-at!
+          pointed-prompt.core :refer $ prompt-at! clear-prompt!
       :defs $ {}
         |main! $ quote
-          defn main! () (load-console-formatter!) (println "\"App Started")
-            .!addEventListener js/window "\"click" $ fn (event) (js/console.log event) (.!stopPropagation event)
-              prompt-at!
-                [] (.-pageX event) (.-pageY event)
-                {} $ :textarea? true
-                fn (content) (js/console.log content)
+          defn main! () (load-console-formatter!) (listen!) (println "\"App Started")
         |reload! $ quote
-          defn reload! () $ println "\"Code updated."
+          defn reload! () (listen!) (println "\"Code updated.")
+        |listen! $ quote
+          defn listen! ()
+            set! (.-onclick js/window)
+              fn (event) (js/console.log event) (.!stopPropagation event)
+                prompt-at!
+                  [] (.-pageX event) (.-pageY event)
+                  {} $ :textarea?
+                    > (rand 1) 0.5
+                  fn (content) (js/console.log content)
+            set! (.-clearPrompt js/window) clear-prompt!
       :proc $ quote ()
