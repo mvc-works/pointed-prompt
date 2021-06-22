@@ -469,6 +469,10 @@
                                 :data $ {}
                                   |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1622476196384) (:text |.!remove)
                                   |j $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1586366343733) (:text |root)
+                          |v $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1624350104764)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1624350065033) (:text |.!stopPropagation)
+                              |j $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1624350105888) (:text |event)
                   |yD $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1586366343733)
                     :data $ {}
                       |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1586366343733) (:text |set!)
@@ -1151,4 +1155,4 @@
     :init-fn |pointed-prompt.app.main/main!
     :compact-output? true
     :storage-key |calcit.cirru
-    :version |0.0.2
+    :version |0.0.3

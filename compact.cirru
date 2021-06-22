@@ -2,7 +2,7 @@
 {} (:package |pointed-prompt)
   :configs $ {} (:init-fn |pointed-prompt.app.main/main!) (:reload-fn |pointed-prompt.app.main/reload!)
     :modules $ []
-    :version |0.0.2
+    :version |0.0.3
   :files $ {}
     |pointed-prompt.core $ {}
       :ns $ quote
@@ -79,6 +79,7 @@
                     if textarea? (.-metaKey event) true
                   cb $ .-value input
                   .!remove root
+                .!stopPropagation event
               .!addEventListener close "\"click" $ fn (event) (.!remove root)
               when textarea?
                 set! (.-style submit) (style->string style-submit)
