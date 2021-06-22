@@ -2,7 +2,7 @@
 {} (:package |pointed-prompt)
   :configs $ {} (:init-fn |pointed-prompt.app.main/main!) (:reload-fn |pointed-prompt.app.main/reload!)
     :modules $ []
-    :version |0.0.3
+    :version |0.0.4
   :files $ {}
     |pointed-prompt.core $ {}
       :ns $ quote
@@ -78,6 +78,9 @@
                     = "\"Enter" $ .-key event
                     if textarea? (.-metaKey event) true
                   cb $ .-value input
+                  .!remove root
+                when
+                  = "\"Escape" $ .-key event
                   .!remove root
                 .!stopPropagation event
               .!addEventListener close "\"click" $ fn (event) (.!remove root)
