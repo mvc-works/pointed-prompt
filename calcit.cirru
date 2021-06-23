@@ -473,6 +473,21 @@
                             :data $ {}
                               |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1624350065033) (:text |.!stopPropagation)
                               |j $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1624350105888) (:text |event)
+                          |t $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1586366343733)
+                            :data $ {}
+                              |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1586366343733) (:text |when)
+                              |j $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1624362231444)
+                                :data $ {}
+                                  |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1624362231444) (:text |=)
+                                  |j $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1624362251986) (:text "|\"Escape")
+                                  |r $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1624362231444)
+                                    :data $ {}
+                                      |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1624362231444) (:text |.-key)
+                                      |j $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1624362231444) (:text |event)
+                              |v $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1586366343733)
+                                :data $ {}
+                                  |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1622476196384) (:text |.!remove)
+                                  |j $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1586366343733) (:text |root)
                   |yD $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1586366343733)
                     :data $ {}
                       |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1586366343733) (:text |set!)
@@ -1155,4 +1170,4 @@
     :init-fn |pointed-prompt.app.main/main!
     :compact-output? true
     :storage-key |calcit.cirru
-    :version |0.0.3
+    :version |0.0.4
