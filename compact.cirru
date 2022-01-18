@@ -2,7 +2,8 @@
 {} (:package |pointed-prompt)
   :configs $ {} (:init-fn |pointed-prompt.app.main/main!) (:reload-fn |pointed-prompt.app.main/reload!)
     :modules $ []
-    :version |0.0.4
+    :version |0.0.5-a1
+  :entries $ {}
   :files $ {}
     |pointed-prompt.core $ {}
       :ns $ quote
@@ -99,12 +100,9 @@
                   , 0
                 duration $ - (js/window.performance.now) created
               if (> duration 100) (.!remove @*box-root)
-      :proc $ quote ()
     |pointed-prompt.util.styles $ {}
       :ns $ quote (ns pointed-prompt.util.styles)
       :defs $ {}
-        |layout-column $ quote
-          def layout-column $ {} (:display |flex) (:align-items |stretch) (:flex-direction |column)
         |style->string $ quote
           defn style->string (styles)
             -> styles (.to-list)
@@ -115,23 +113,20 @@
                     v $ get-style-value (last entry) (dashed->camel style-name)
                   str style-name |: (escape-html v) |;
               join-str |
-        |dashed->camel $ quote
-          defn dashed->camel (x)
-            .!replace x dashed-letter-pattern $ fn (cc pos prop)
-              .!toUpperCase $ aget cc 1
-        |dashed-letter-pattern $ quote
-          def dashed-letter-pattern $ new js/RegExp "\"-[a-z]" "\"g"
         |hsl $ quote
           defn hsl (h s l ? arg)
             let
                 a $ either arg 1
               str "\"hsl(" h "\"," s "\"%," l "\"%," a "\")"
         |font-code $ quote (def font-code "|Source Code Pro, Menlo, Ubuntu Mono, Consolas, monospace")
+        |layout-column $ quote
+          def layout-column $ {} (:display |flex) (:align-items |stretch) (:flex-direction |column)
         |layout-expand $ quote
           def layout-expand $ {} (:flex 1) (:overflow :auto)
         |escape-html $ quote
           defn escape-html (text)
             if (nil? text) "\"" $ -> text (.replace "|\"" |&quot;) (.replace |< |&lt;) (.replace |> |&gt;) (.replace &newline "\"&#13;&#10;")
+        |font-normal $ quote (def font-normal "|Hind, Helvatica, Arial, sans-serif")
         |get-style-value $ quote
           defn get-style-value (x prop)
             cond
@@ -141,13 +136,16 @@
               (number? x)
                 if (.!test pattern-non-dimension-props prop) (str x) (str x "\"px")
               true $ str x
-        |font-normal $ quote (def font-normal "|Hind, Helvatica, Arial, sans-serif")
+        |dashed->camel $ quote
+          defn dashed->camel (x)
+            .!replace x dashed-letter-pattern $ fn (cc pos prop)
+              .!toUpperCase $ aget cc 1
         |pattern-non-dimension-props $ quote
           def pattern-non-dimension-props $ new js/RegExp "\"acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera" "\"i"
+        |dashed-letter-pattern $ quote
+          def dashed-letter-pattern $ new js/RegExp "\"-[a-z]" "\"g"
         |layout-row $ quote
           def layout-row $ {} (:display |flex) (:align-items |stretch) (:flex-direction |row)
-      :proc $ quote ()
-      :configs $ {}
     |pointed-prompt.app.main $ {}
       :ns $ quote
         ns pointed-prompt.app.main $ :require
@@ -164,7 +162,6 @@
                 prompt-at!
                   [] (.-pageX event) (.-pageY event)
                   {} $ :textarea?
-                    > (rand 1) 0.5
+                    > (js/Math.random 1) 0.5
                   fn (content) (js/console.log content)
             set! (.-clearPrompt js/window) clear-prompt!
-      :proc $ quote ()

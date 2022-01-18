@@ -1139,7 +1139,7 @@
                                       |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1623778127312) (:text |>)
                                       |j $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1623778129072)
                                         :data $ {}
-                                          |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1623778129735) (:text |rand)
+                                          |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1642519582878) (:text |js/Math.random)
                                           |j $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1623778130341) (:text |1)
                                       |r $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1623778131929) (:text |0.5)
                           |v $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1623776280674)
@@ -1170,4 +1170,5 @@
     :init-fn |pointed-prompt.app.main/main!
     :compact-output? true
     :storage-key |calcit.cirru
-    :version |0.0.4
+    :version |0.0.5-a1
+  :entries $ {}
