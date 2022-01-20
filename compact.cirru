@@ -26,6 +26,8 @@
           def style-submit $ {} (:margin-left 8)
             :color $ hsl 200 80 80
             :cursor :pointer
+            :font-size 14
+            :font-family font-normal
         |*box-root $ quote (defatom *box-root nil)
         |prompt-at! $ quote
           defn prompt-at! (position options cb)

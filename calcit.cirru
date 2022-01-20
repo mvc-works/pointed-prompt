@@ -179,6 +179,14 @@
                     :data $ {}
                       |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1588403947947) (:text |:cursor)
                       |j $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1588403949114) (:text |:pointer)
+                  |x $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1642519865418)
+                    :data $ {}
+                      |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1642519866727) (:text |:font-size)
+                      |j $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1642519872828) (:text |14)
+                  |y $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1642519878109)
+                    :data $ {}
+                      |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1642519879931) (:text |:font-family)
+                      |j $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1642519891347) (:text |font-normal)
           |*box-root $ {} (:type :expr) (:by |rJG4IHzWf) (:at 1623756517629)
             :data $ {}
               |T $ {} (:type :leaf) (:by |rJG4IHzWf) (:at 1623756521063) (:text |defatom)
