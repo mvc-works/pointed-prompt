@@ -1,34 +1,39 @@
 
 {} (:package |pointed-prompt)
-  :configs $ {} (:init-fn |pointed-prompt.app.main/main!) (:reload-fn |pointed-prompt.app.main/reload!)
+  :configs $ {} (:init-fn |pointed-prompt.app.main/main!) (:reload-fn |pointed-prompt.app.main/reload!) (:version |0.0.5-a3)
     :modules $ []
-    :version |0.0.5-a1
   :entries $ {}
   :files $ {}
-    |pointed-prompt.core $ {}
-      :ns $ quote
-        ns pointed-prompt.core $ :require
-          [] pointed-prompt.util.styles :refer $ [] hsl style->string layout-row layout-column layout-expand font-code font-normal
+    |pointed-prompt.app.main $ {}
       :defs $ {}
-        |style-container $ quote
-          def style-container $ {} (:position :absolute) (:padding "\"10px 12px")
-            :background-color $ hsl 0 0 30 0.9
-            :border $ str "\"1px solid " (hsl 0 0 30)
-            :width 240
-            :border-radius "\"2px"
-        |style-input $ quote
-          def style-input $ {} (:outline :none) (:font-family font-normal) (:line-height "\"20px") (:font-size 14) (:padding "\"6px 8px") (:width "\"100%") (:border-radius "\"2px") (:border :none) (:height 28)
-        |style-close $ quote
-          def style-close $ {} (:margin-left 8) (:font-family "\"Helvetica, sans-serif") (:font-size 24) (:font-weight 100)
-            :color $ hsl 0 80 80
-            :cursor :pointer
-        |style-submit $ quote
-          def style-submit $ {} (:margin-left 8)
-            :color $ hsl 200 80 80
-            :cursor :pointer
-            :font-size 14
-            :font-family font-normal
+        |listen! $ quote
+          defn listen! ()
+            set! (.-onclick js/window)
+              fn (event) (js/console.log event) (.!stopPropagation event)
+                prompt-at!
+                  [] (.-pageX event) (.-pageY event)
+                  {} $ :textarea?
+                    > (js/Math.random 1) 0.5
+                  fn (content) (js/console.log content)
+            set! (.-clearPrompt js/window) clear-prompt!
+        |main! $ quote
+          defn main! () (load-console-formatter!) (listen!) (println "\"App Started")
+        |reload! $ quote
+          defn reload! () (listen!) (println "\"Code updated.")
+      :ns $ quote
+        ns pointed-prompt.app.main $ :require
+          pointed-prompt.core :refer $ prompt-at! clear-prompt!
+    |pointed-prompt.core $ {}
+      :defs $ {}
         |*box-root $ quote (defatom *box-root nil)
+        |clear-prompt! $ quote
+          defn clear-prompt! () $ if (some? @*box-root)
+            let
+                created $ if (some? @*box-root)
+                  js/parseFloat $ .-createdTime (.-dataset @*box-root)
+                  , 0
+                duration $ - (js/window.performance.now) created
+              if (> duration 100) (.!remove @*box-root)
         |prompt-at! $ quote
           defn prompt-at! (position options cb)
             let
@@ -94,17 +99,62 @@
                   .!remove root
               .!appendChild js/document.body root
               .!select input
-        |clear-prompt! $ quote
-          defn clear-prompt! () $ if (some? @*box-root)
-            let
-                created $ if (some? @*box-root)
-                  js/parseFloat $ .-createdTime (.-dataset @*box-root)
-                  , 0
-                duration $ - (js/window.performance.now) created
-              if (> duration 100) (.!remove @*box-root)
+        |style-close $ quote
+          def style-close $ {} (:margin-left 8) (:font-family "\"Helvetica, sans-serif") (:font-size 24) (:font-weight 100)
+            :color $ hsl 0 80 80
+            :cursor :pointer
+        |style-container $ quote
+          def style-container $ {} (:position :absolute) (:padding "\"10px 12px")
+            :background-color $ hsl 0 0 30 0.9
+            :border $ str "\"1px solid " (hsl 0 0 30)
+            :width 240
+            :border-radius "\"2px"
+        |style-input $ quote
+          def style-input $ {} (:outline :none) (:font-family font-normal) (:line-height "\"20px") (:font-size 14) (:padding "\"6px 8px") (:width "\"100%") (:border-radius "\"2px") (:border :none) (:height 28)
+        |style-submit $ quote
+          def style-submit $ {} (:margin-left 8)
+            :color $ hsl 200 80 80
+            :cursor :pointer
+            :font-size 14
+            :font-family font-normal
+      :ns $ quote
+        ns pointed-prompt.core $ :require
+          [] pointed-prompt.util.styles :refer $ [] hsl style->string layout-row layout-column layout-expand font-code font-normal
     |pointed-prompt.util.styles $ {}
-      :ns $ quote (ns pointed-prompt.util.styles)
       :defs $ {}
+        |dashed->camel $ quote
+          defn dashed->camel (x)
+            .!replace x dashed-letter-pattern $ fn (cc pos prop)
+              .!toUpperCase $ aget cc 1
+        |dashed-letter-pattern $ quote
+          def dashed-letter-pattern $ new js/RegExp "\"-[a-z]" "\"g"
+        |escape-html $ quote
+          defn escape-html (text)
+            if (nil? text) "\"" $ -> text (.replace "|\"" |&quot;) (.replace |< |&lt;) (.replace |> |&gt;) (.replace &newline "\"&#13;&#10;")
+        |font-code $ quote (def font-code "|Source Code Pro, Menlo, Ubuntu Mono, Consolas, monospace")
+        |font-normal $ quote (def font-normal "|Hind, Helvatica, Arial, sans-serif")
+        |get-style-value $ quote
+          defn get-style-value (x prop)
+            cond
+                string? x
+                , x
+              (tag? x) (turn-string x)
+              (number? x)
+                if (.!test pattern-non-dimension-props prop) (str x) (str x "\"px")
+              true $ str x
+        |hsl $ quote
+          defn hsl (h s l ? arg)
+            let
+                a $ either arg 1
+              str "\"hsl(" h "\"," s "\"%," l "\"%," a "\")"
+        |layout-column $ quote
+          def layout-column $ {} (:display |flex) (:align-items |stretch) (:flex-direction |column)
+        |layout-expand $ quote
+          def layout-expand $ {} (:flex 1) (:overflow :auto)
+        |layout-row $ quote
+          def layout-row $ {} (:display |flex) (:align-items |stretch) (:flex-direction |row)
+        |pattern-non-dimension-props $ quote
+          def pattern-non-dimension-props $ new js/RegExp "\"acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera" "\"i"
         |style->string $ quote
           defn style->string (styles)
             -> styles (.to-list)
@@ -115,55 +165,4 @@
                     v $ get-style-value (last entry) (dashed->camel style-name)
                   str style-name |: (escape-html v) |;
               join-str |
-        |hsl $ quote
-          defn hsl (h s l ? arg)
-            let
-                a $ either arg 1
-              str "\"hsl(" h "\"," s "\"%," l "\"%," a "\")"
-        |font-code $ quote (def font-code "|Source Code Pro, Menlo, Ubuntu Mono, Consolas, monospace")
-        |layout-column $ quote
-          def layout-column $ {} (:display |flex) (:align-items |stretch) (:flex-direction |column)
-        |layout-expand $ quote
-          def layout-expand $ {} (:flex 1) (:overflow :auto)
-        |escape-html $ quote
-          defn escape-html (text)
-            if (nil? text) "\"" $ -> text (.replace "|\"" |&quot;) (.replace |< |&lt;) (.replace |> |&gt;) (.replace &newline "\"&#13;&#10;")
-        |font-normal $ quote (def font-normal "|Hind, Helvatica, Arial, sans-serif")
-        |get-style-value $ quote
-          defn get-style-value (x prop)
-            cond
-                string? x
-                , x
-              (keyword? x) (turn-string x)
-              (number? x)
-                if (.!test pattern-non-dimension-props prop) (str x) (str x "\"px")
-              true $ str x
-        |dashed->camel $ quote
-          defn dashed->camel (x)
-            .!replace x dashed-letter-pattern $ fn (cc pos prop)
-              .!toUpperCase $ aget cc 1
-        |pattern-non-dimension-props $ quote
-          def pattern-non-dimension-props $ new js/RegExp "\"acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera" "\"i"
-        |dashed-letter-pattern $ quote
-          def dashed-letter-pattern $ new js/RegExp "\"-[a-z]" "\"g"
-        |layout-row $ quote
-          def layout-row $ {} (:display |flex) (:align-items |stretch) (:flex-direction |row)
-    |pointed-prompt.app.main $ {}
-      :ns $ quote
-        ns pointed-prompt.app.main $ :require
-          pointed-prompt.core :refer $ prompt-at! clear-prompt!
-      :defs $ {}
-        |main! $ quote
-          defn main! () (load-console-formatter!) (listen!) (println "\"App Started")
-        |reload! $ quote
-          defn reload! () (listen!) (println "\"Code updated.")
-        |listen! $ quote
-          defn listen! ()
-            set! (.-onclick js/window)
-              fn (event) (js/console.log event) (.!stopPropagation event)
-                prompt-at!
-                  [] (.-pageX event) (.-pageY event)
-                  {} $ :textarea?
-                    > (js/Math.random 1) 0.5
-                  fn (content) (js/console.log content)
-            set! (.-clearPrompt js/window) clear-prompt!
+      :ns $ quote (ns pointed-prompt.util.styles)
