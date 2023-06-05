@@ -1,9 +1,9 @@
 {
-  "version": "0.0.5-a2",
+  "version": "0.0.5-a3",
   "dependencies": {
-    "@calcit/procs": "^0.5.15"
+    "@calcit/procs": "^0.7.0-a5"
   },
   "devDependencies": {
-    "vite": "^2.7.12"
+    "vite": "^4.3.9"
   }
 }
