@@ -1,10 +1,10 @@
 
 {} (:package |pointed-prompt)
-  :configs $ {} (:compact-output? true) (:extension |.cljs) (:init-fn |pointed-prompt.app.main/main!) (:output |src) (:port 6001) (:reload-fn |pointed-prompt.app.main/reload!) (:storage-key |calcit.cirru) (:version |0.0.6)
+  :configs $ {} (:compact-output? true) (:extension |.cljs) (:init-fn |pointed-prompt.app.main/main!) (:output |src) (:port 6001) (:reload-fn |pointed-prompt.app.main/reload!) (:storage-key |calcit.cirru) (:version |0.0.7)
     :modules $ []
   :entries $ {}
   :files $ {}
-    |pointed-prompt.app.main $ {}
+    |pointed-prompt.app.main $ %{} :FileEntry
       :defs $ {}
         |listen! $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1623776277341) (:by |rJG4IHzWf)
@@ -127,7 +127,7 @@
                       :data $ {}
                         |T $ %{} :Leaf (:at 1623756698321) (:by |rJG4IHzWf) (:text |prompt-at!)
                         |j $ %{} :Leaf (:at 1623778806457) (:by |rJG4IHzWf) (:text |clear-prompt!)
-    |pointed-prompt.core $ {}
+    |pointed-prompt.core $ %{} :FileEntry
       :defs $ {}
         |*box-root $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1623756517629) (:by |rJG4IHzWf)
@@ -853,8 +853,7 @@
                         |y $ %{} :Leaf (:at 1622533792777) (:by |rJG4IHzWf) (:text |layout-expand)
                         |yT $ %{} :Leaf (:at 1622533794161) (:by |rJG4IHzWf) (:text |font-code)
                         |yj $ %{} :Leaf (:at 1622533797173) (:by |rJG4IHzWf) (:text |font-normal)
-    |pointed-prompt.util.styles $ {}
-      :configs $ {}
+    |pointed-prompt.util.styles $ %{} :FileEntry
       :defs $ {}
         |dashed->camel $ %{} :CodeEntry (:doc |)
           :code $ %{} :Expr (:at 1623756941636) (:by |rJG4IHzWf)
