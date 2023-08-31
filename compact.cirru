@@ -1,10 +1,10 @@
 
 {} (:package |pointed-prompt)
-  :configs $ {} (:init-fn |pointed-prompt.app.main/main!) (:reload-fn |pointed-prompt.app.main/reload!) (:version |0.0.6)
+  :configs $ {} (:init-fn |pointed-prompt.app.main/main!) (:reload-fn |pointed-prompt.app.main/reload!) (:version |0.0.7)
     :modules $ []
   :entries $ {}
   :files $ {}
-    |pointed-prompt.app.main $ {}
+    |pointed-prompt.app.main $ %{} :FileEntry
       :defs $ {}
         |listen! $ %{} :CodeEntry (:doc |)
           :code $ quote
@@ -27,7 +27,7 @@
         :code $ quote
           ns pointed-prompt.app.main $ :require
             pointed-prompt.core :refer $ prompt-at! clear-prompt!
-    |pointed-prompt.core $ {}
+    |pointed-prompt.core $ %{} :FileEntry
       :defs $ {}
         |*box-root $ %{} :CodeEntry (:doc |)
           :code $ quote (defatom *box-root nil)
@@ -132,7 +132,7 @@
         :code $ quote
           ns pointed-prompt.core $ :require
             [] pointed-prompt.util.styles :refer $ [] hsl style->string layout-row layout-column layout-expand font-code font-normal
-    |pointed-prompt.util.styles $ {}
+    |pointed-prompt.util.styles $ %{} :FileEntry
       :defs $ {}
         |dashed->camel $ %{} :CodeEntry (:doc |)
           :code $ quote
