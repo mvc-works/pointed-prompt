@@ -11,14 +11,21 @@
         |listen! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn listen! ()
-              set! (.-onclick (unsafe-coerce js/window JsObject))
+              set!
+                .-onclick $ unsafe-coerce js/window JsObject
                 fn (event) (js/console.log event) (.!stopPropagation event)
                   prompt-at!
-                    [] (unsafe-coerce (.-pageX event) Number) (unsafe-coerce (.-pageY event) Number)
+                    []
+                      unsafe-coerce (.-pageX event) Number
+                      unsafe-coerce (.-pageY event) Number
                     {} $ :textarea?
-                      > (unsafe-coerce (js/Math.random 1) Number) 0.5
+                      >
+                        unsafe-coerce (js/Math.random 1) Number
+                        , 0.5
                     fn (content) (js/console.log content)
-              set! (.-clearPrompt (unsafe-coerce js/window JsObject)) clear-prompt!
+              set!
+                .-clearPrompt $ unsafe-coerce js/window JsObject
+                , clear-prompt!
           :examples $ []
           :schema $ :: 'Dynamic
         |main! $ %{} 'CodeEntry (:doc |)
@@ -46,10 +53,16 @@
             defn clear-prompt! () $ if (some? @*box-root)
               let
                   created $ if (some? @*box-root)
-                    js/parseFloat $ .-createdTime (unsafe-coerce (.-dataset (unsafe-coerce @*box-root JsObject)) JsObject)
+                    js/parseFloat $ .-createdTime
+                      unsafe-coerce
+                        .-dataset $ unsafe-coerce @*box-root JsObject
+                        , JsObject
                     , 0
-                  duration $ - (unsafe-coerce (js/window.performance.now) Number) created
-                if (> duration 100) (.!remove (unsafe-coerce @*box-root JsObject))
+                  duration $ -
+                    unsafe-coerce (js/window.performance.now) Number
+                    , created
+                if (> duration 100)
+                  .!remove $ unsafe-coerce @*box-root JsObject
           :examples $ []
           :schema $ :: 'Dynamic
         |prompt-at! $ %{} 'CodeEntry (:doc |)
@@ -59,13 +72,16 @@
                   root $ unsafe-coerce (js/document.createElement |div) JsObject
                   control $ unsafe-coerce (js/document.createElement |div) JsObject
                   textarea? $ option:unwrap-or (get options :textarea?) false
-                  input $ unsafe-coerce (js/document.createElement (if textarea? |textarea |input)) JsObject
+                  input $ unsafe-coerce
+                    js/document.createElement $ if textarea? |textarea |input
+                    , JsObject
                   submit $ unsafe-coerce (js/document.createElement |a) JsObject
                   x $ nth position 0
                   y $ nth position 1
                   close $ unsafe-coerce (js/document.createElement |span) JsObject
                   width $ if textarea? 320 240
-                if (some? @*box-root) (.!remove (unsafe-coerce @*box-root JsObject))
+                if (some? @*box-root)
+                  .!remove $ unsafe-coerce @*box-root JsObject
                 reset! *box-root root
                 .!appendChild root input
                 .!appendChild root control
@@ -77,10 +93,22 @@
                   style->string $ merge layout-row style-container
                     {} (:top y) (:left x) (:width width)
                     if
-                      < (- (unsafe-coerce (.-innerWidth (unsafe-coerce js/window JsObject)) Number) x) width
+                      <
+                        -
+                          unsafe-coerce
+                            .-innerWidth $ unsafe-coerce js/window JsObject
+                            , Number
+                          , x
+                        , width
                       {} (:left nil) (:right 8)
                     if
-                      < (- (unsafe-coerce (.-innerHeight (unsafe-coerce js/window JsObject)) Number) y) 70
+                      <
+                        -
+                          unsafe-coerce
+                            .-innerHeight $ unsafe-coerce js/window JsObject
+                            , Number
+                          , y
+                        , 70
                       {} (:top nil) (:bottom 8)
                 set!
                   .-createdTime $ unsafe-coerce (.-dataset root) JsObject
