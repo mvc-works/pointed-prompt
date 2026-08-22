@@ -116,7 +116,7 @@
                 set! (.-style input)
                   style->string $ merge layout-expand style-input
                     if textarea? $ {} (:height 80)
-                    option:unwrap-or (get options :style) ({})
+                    option:unwrap-or (get options :style) {}
                 set! (.-style control)
                   style->string $ merge layout-column
                     {} $ :justify-content :space-evenly
