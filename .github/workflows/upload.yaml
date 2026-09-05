@@ -18,15 +18,16 @@ jobs:
 
     - run: corepack enable && corepack prepare yarn@4.12.0 --activate
 
-    - uses: calcit-lang/setup-calcit@3b5843cb725963bb4ee158cfe49dad877134963e
+    - uses: calcit-lang/setup-calcit@v1.4.0
       with:
         tools: calcit,caps
 
     - name: validate snapshot
       run: |
-        caps --ci
+        caps --strict --ci
         calcit calcit.cirru edit format
         git diff --exit-code -- calcit.cirru
+        calcit calcit.cirru --check-only
 
     - name: "compiles to js"
       run: >

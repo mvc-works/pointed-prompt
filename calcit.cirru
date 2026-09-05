@@ -6,9 +6,9 @@
       :modules $ []
       :type-slots $ {}
   :files $ {}
-    |pointed-prompt.app.main $ %{} 'FileEntry
+    'pointed-prompt.app.main $ %{} 'FileEntry
       :defs $ {}
-        |listen! $ %{} 'CodeEntry (:doc |)
+        'listen! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn listen! ()
               set!
@@ -28,12 +28,12 @@
                 , clear-prompt!
           :examples $ []
           :schema $ :: 'Dynamic
-        |main! $ %{} 'CodeEntry (:doc |)
+        'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn main! () (load-console-formatter!) (listen!) (println "|App Started")
           :examples $ []
           :schema $ :: 'Dynamic
-        |reload! $ %{} 'CodeEntry (:doc |)
+        'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn reload! () (listen!) (println "|Code updated.")
           :examples $ []
@@ -42,13 +42,13 @@
         :code $ quote
           ns pointed-prompt.app.main $ :require
             pointed-prompt.core :refer $ prompt-at! clear-prompt!
-    |pointed-prompt.core $ %{} 'FileEntry
+    'pointed-prompt.core $ %{} 'FileEntry
       :defs $ {}
-        |*box-root $ %{} 'CodeEntry (:doc |)
+        '*box-root $ %{} 'CodeEntry (:doc |)
           :code $ quote (defatom *box-root nil)
           :examples $ []
           :schema $ :: 'Dynamic
-        |clear-prompt! $ %{} 'CodeEntry (:doc |)
+        'clear-prompt! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn clear-prompt! () $ if (some? @*box-root)
               let
@@ -65,19 +65,20 @@
                   .!remove $ unsafe-coerce @*box-root JsObject
           :examples $ []
           :schema $ :: 'Dynamic
-        |prompt-at! $ %{} 'CodeEntry (:doc |)
+        'prompt-at! $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn prompt-at! (position options cb)
               let
                   root $ unsafe-coerce (js/document.createElement |div) JsObject
                   control $ unsafe-coerce (js/document.createElement |div) JsObject
                   textarea? $ option:unwrap-or (get options :textarea?) false
+                  empty-style $ {}
                   input $ unsafe-coerce
                     js/document.createElement $ if textarea? |textarea |input
                     , JsObject
                   submit $ unsafe-coerce (js/document.createElement |a) JsObject
-                  x $ nth position 0
-                  y $ nth position 1
+                  x $ unsafe-coerce (nth position 0) Number
+                  y $ unsafe-coerce (nth position 1) Number
                   close $ unsafe-coerce (js/document.createElement |span) JsObject
                   width $ if textarea? 320 240
                 if (some? @*box-root)
@@ -91,7 +92,10 @@
                   .!appendChild root control
                 set! (.-style root)
                   style->string $ merge layout-row style-container
-                    {} (:top y) (:left x) (:width width)
+                    {}
+                      :top $ str y |px
+                      :left $ str x |px
+                      :width $ str width |px
                     if
                       <
                         -
@@ -100,7 +104,8 @@
                             , Number
                           , x
                         , width
-                      {} (:left nil) (:right 8)
+                      {} (:left |auto) (:right |8px)
+                      , empty-style
                     if
                       <
                         -
@@ -109,17 +114,20 @@
                             , Number
                           , y
                         , 70
-                      {} (:top nil) (:bottom 8)
+                      {} (:top |auto) (:bottom |8px)
+                      , empty-style
                 set!
                   .-createdTime $ unsafe-coerce (.-dataset root) JsObject
                   str $ unsafe-coerce (js/window.performance.now) Number
                 set! (.-style input)
                   style->string $ merge layout-expand style-input
-                    if textarea? $ {} (:height 80)
-                    option:unwrap-or (get options :style) {}
+                    {} $ :height (if textarea? |80px |28px)
+                    unsafe-coerce
+                      option:unwrap-or (get options :style) empty-style
+                      :: 'Map 'Tag 'Dynamic
                 set! (.-style control)
                   style->string $ merge layout-column
-                    {} $ :justify-content :space-evenly
+                    {} $ :justify-content |space-evenly
                 set! (.-style close) (style->string style-close)
                 set! (.-placeholder input)
                   option:unwrap-or (get options :placeholder) |text...
@@ -130,12 +138,12 @@
                 .!addEventListener input |keydown $ fn (event)
                   when
                     and
-                      = |Enter $ .-key event
+                      = |Enter $ unsafe-coerce (.-key event) String
                       if textarea? (.-metaKey event) true
                     cb $ unsafe-coerce (.-value input) String
                     .!remove root
                   when
-                    = |Escape $ .-key event
+                    = |Escape $ unsafe-coerce (.-key event) String
                     .!remove root
                   .!stopPropagation event
                 .!addEventListener close |click $ fn (event) (.!remove root)
@@ -148,14 +156,14 @@
                 .!select input
           :examples $ []
           :schema $ :: 'Dynamic
-        |style-close $ %{} 'CodeEntry (:doc |)
+        'style-close $ %{} 'CodeEntry (:doc |)
           :code $ quote
             def style-close $ {} (:margin-left 8) (:font-family "|Helvetica, sans-serif") (:font-size 24) (:font-weight 100)
               :color $ hsl 0 80 80
               :cursor :pointer
           :examples $ []
           :schema $ :: 'Dynamic
-        |style-container $ %{} 'CodeEntry (:doc |)
+        'style-container $ %{} 'CodeEntry (:doc |)
           :code $ quote
             def style-container $ {} (:position :absolute) (:padding "|10px 12px")
               :background-color $ hsl 0 0 30 0.9
@@ -163,13 +171,13 @@
               :width 240
               :border-radius |2px
           :examples $ []
-          :schema $ :: 'Dynamic
-        |style-input $ %{} 'CodeEntry (:doc |)
+          :schema $ :: 'Map 'Tag 'Dynamic
+        'style-input $ %{} 'CodeEntry (:doc |)
           :code $ quote
             def style-input $ {} (:outline :none) (:font-family font-normal) (:line-height |20px) (:font-size 14) (:padding "|6px 8px") (:width |100%) (:border-radius |2px) (:border :none) (:height 28)
           :examples $ []
-          :schema $ :: 'Dynamic
-        |style-submit $ %{} 'CodeEntry (:doc |)
+          :schema $ :: 'Map 'Tag 'Dynamic
+        'style-submit $ %{} 'CodeEntry (:doc |)
           :code $ quote
             def style-submit $ {} (:margin-left 8)
               :color $ hsl 200 80 80
@@ -182,35 +190,35 @@
         :code $ quote
           ns pointed-prompt.core $ :require
             [] pointed-prompt.util.styles :refer $ [] hsl style->string layout-row layout-column layout-expand font-code font-normal
-    |pointed-prompt.util.styles $ %{} 'FileEntry
+    'pointed-prompt.util.styles $ %{} 'FileEntry
       :defs $ {}
-        |dashed->camel $ %{} 'CodeEntry (:doc |)
+        'dashed->camel $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn dashed->camel (x)
               .!replace x dashed-letter-pattern $ fn (cc pos prop)
                 .!toUpperCase $ unsafe-coerce (aget cc 1) String
           :examples $ []
           :schema $ :: 'Dynamic
-        |dashed-letter-pattern $ %{} 'CodeEntry (:doc |)
+        'dashed-letter-pattern $ %{} 'CodeEntry (:doc |)
           :code $ quote
             def dashed-letter-pattern $ new js/RegExp |-[a-z] |g
           :examples $ []
           :schema $ :: 'Dynamic
-        |escape-html $ %{} 'CodeEntry (:doc |)
+        'escape-html $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn escape-html (text)
               if (nil? text) | $ -> text (.replace "|\"" |&quot;) (.replace |< |&lt;) (.replace |> |&gt;) (.replace &newline |&#13;&#10;)
           :examples $ []
           :schema $ :: 'Dynamic
-        |font-code $ %{} 'CodeEntry (:doc |)
+        'font-code $ %{} 'CodeEntry (:doc |)
           :code $ quote (def font-code "|Source Code Pro, Menlo, Ubuntu Mono, Consolas, monospace")
           :examples $ []
           :schema $ :: 'Dynamic
-        |font-normal $ %{} 'CodeEntry (:doc |)
+        'font-normal $ %{} 'CodeEntry (:doc |)
           :code $ quote (def font-normal "|Hind, Helvatica, Arial, sans-serif")
           :examples $ []
           :schema $ :: 'Dynamic
-        |get-style-value $ %{} 'CodeEntry (:doc |)
+        'get-style-value $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn get-style-value (x prop)
               cond
@@ -222,7 +230,7 @@
                 true $ str x
           :examples $ []
           :schema $ :: 'Dynamic
-        |hsl $ %{} 'CodeEntry (:doc |)
+        'hsl $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn hsl (h s l ? arg)
               let
@@ -230,27 +238,27 @@
                 str "|hsl(" h |, s |%, l |%, a "|)"
           :examples $ []
           :schema $ :: 'Dynamic
-        |layout-column $ %{} 'CodeEntry (:doc |)
+        'layout-column $ %{} 'CodeEntry (:doc |)
           :code $ quote
             def layout-column $ {} (:display |flex) (:align-items |stretch) (:flex-direction |column)
           :examples $ []
-          :schema $ :: 'Dynamic
-        |layout-expand $ %{} 'CodeEntry (:doc |)
+          :schema $ :: 'Map 'Tag 'Dynamic
+        'layout-expand $ %{} 'CodeEntry (:doc |)
           :code $ quote
             def layout-expand $ {} (:flex 1) (:overflow :auto)
           :examples $ []
-          :schema $ :: 'Dynamic
-        |layout-row $ %{} 'CodeEntry (:doc |)
+          :schema $ :: 'Map 'Tag 'Dynamic
+        'layout-row $ %{} 'CodeEntry (:doc |)
           :code $ quote
             def layout-row $ {} (:display |flex) (:align-items |stretch) (:flex-direction |row)
           :examples $ []
-          :schema $ :: 'Dynamic
-        |pattern-non-dimension-props $ %{} 'CodeEntry (:doc |)
+          :schema $ :: 'Map 'Tag 'Dynamic
+        'pattern-non-dimension-props $ %{} 'CodeEntry (:doc |)
           :code $ quote
             def pattern-non-dimension-props $ new js/RegExp "|acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera" |i
           :examples $ []
           :schema $ :: 'Dynamic
-        |style->string $ %{} 'CodeEntry (:doc |)
+        'style->string $ %{} 'CodeEntry (:doc |)
           :code $ quote
             defn style->string (styles)
               -> styles (.to-list)
