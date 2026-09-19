@@ -5,32 +5,27 @@
   :entries $ {} $ :default
     {} (:description |) (:init-fn 'pointed-prompt.app.main/main!) (:mode :native) (:reload-fn 'pointed-prompt.app.main/reload!)
       :feature-policy $ {}
-      :modules $ []
+      :modules $ [] |js-ffi/
       :type-slots $ {}
   :files $ {}
     'pointed-prompt.app.main $ %{} 'FileEntry
       :defs $ {}
         'listen! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn listen! ()
-            let
-                window $ unsafe-coerce js/window pointed-prompt.core/WindowHost
-              set! (.-onclick window)
-                fn (event)
-                  hint-fn $ {} (:return 'Unit)
-                    :args $ [] 'pointed-prompt.core/DomEventHost
-                  js/console.log event
-                  .stopPropagation event
-                  prompt-at!
-                    [] (.-pageX event) (.-pageY event)
-                    {} $ :textarea? $ >
-                      unsafe-coerce (js/Math.random 1) Number
-                      , 0.5
-                    fn (content)
-                      hint-fn $ {} (:return 'Unit)
-                        :args $ [] 'String
-                      js/console.log content
-                      , &unit
-              set! (.-clearPrompt window) clear-prompt!
+            browser/add-event-listener! |click $ fn (event)
+              hint-fn $ {} (:return 'Unit)
+                :args $ [] 'js-ffi.browser/EventHost
+              let
+                  mouse $ browser/mouse-event-host event
+                browser/console-log! $ str event
+                do (mouse .prevent-default!) &unit
+                prompt-at!
+                  [] (mouse :client-x) (mouse :client-y)
+                  {} $ :textarea? $ > (browser/random) 0.5
+                  fn (content)
+                    hint-fn $ {} (:return 'Unit)
+                      :args $ [] 'String
+                    browser/console-log! content
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
@@ -49,91 +44,26 @@
             :features $ #{} :js-ffi
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.app.main
-          :require $ pointed-prompt.core :refer $ prompt-at! clear-prompt!
+          :require
+            pointed-prompt.core :refer $ prompt-at! clear-prompt!
+            js-ffi.browser :as browser
+            js-ffi.shared :as shared
     'pointed-prompt.core $ %{} 'FileEntry
       :defs $ {}
         '*box-root $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defatom *box-root (%none)
           :examples $ []
-          :schema $ :: 'Ref $ :: 'Option 'pointed-prompt.core/DomElementHost
-        'DatasetHost $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ deftrait DatasetHost (:createdTime 'String)
-          :examples $ []
-          :ffi $ {} (:backend :js) (:kind :external-object) (:target :browser)
-            :names $ {} $ :createdTime |createdTime
-            :writable $ #{} :createdTime
-          :schema $ :: 'Trait
-        'DocumentHost $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ deftrait DocumentHost (:body 'pointed-prompt.core/DomElementHost)
-            .createElement $ :: 'Fn $ {}
-              :args $ [] 'pointed-prompt.core/DocumentHost 'String
-              :return 'pointed-prompt.core/DomElementHost
-          :examples $ []
-          :ffi $ {} (:backend :js) (:kind :external-object) (:target :browser)
-            :names $ {} $ :createElement |createElement
-          :schema $ :: 'Trait
-        'DomElementHost $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ deftrait DomElementHost (:dataset 'pointed-prompt.core/DatasetHost) (:style 'String) (:innerText 'String) (:placeholder 'String) (:value 'String)
-            .remove $ :: 'Fn $ {}
-              :args $ [] 'pointed-prompt.core/DomElementHost
-              :return 'Unit
-            .appendChild $ :: 'Fn $ {}
-              :args $ [] 'pointed-prompt.core/DomElementHost 'pointed-prompt.core/DomElementHost
-              :return 'pointed-prompt.core/DomElementHost
-            .addEventListener $ :: 'Fn $ {}
-              :args $ [] 'pointed-prompt.core/DomElementHost 'String $ :: 'Fn
-                {} (:return 'Unit)
-                  :args $ [] 'pointed-prompt.core/DomEventHost
-              :return 'Unit
-            .select $ :: 'Fn $ {}
-              :args $ [] 'pointed-prompt.core/DomElementHost
-              :return 'Unit
-          :examples $ []
-          :ffi $ {} (:backend :js) (:kind :external-object) (:target :browser)
-            :names $ {} (:addEventListener |addEventListener) (:appendChild |appendChild) (:innerText |innerText)
-            :writable $ #{} :innerText :placeholder :style :value
-          :schema $ :: 'Trait
-        'DomEventHost $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ deftrait DomEventHost (:pageX 'Number) (:pageY 'Number) (:key 'String) (:metaKey 'Bool)
-            .stopPropagation $ :: 'Fn $ {}
-              :args $ [] 'pointed-prompt.core/DomEventHost
-              :return 'Unit
-          :examples $ []
-          :ffi $ {} (:backend :js) (:kind :external-object) (:target :browser)
-            :names $ {} (:pageX |pageX) (:pageY |pageY) (:stopPropagation |stopPropagation)
-          :schema $ :: 'Trait
-        'PerformanceHost $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ deftrait PerformanceHost
-            .now $ :: 'Fn $ {}
-              :args $ [] 'pointed-prompt.core/PerformanceHost
-              :return 'Number
-          :examples $ []
-          :ffi $ {} (:backend :js) (:kind :external-object) (:target :browser)
-          :schema $ :: 'Trait
-        'WindowHost $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ deftrait WindowHost (:innerWidth 'Number) (:innerHeight 'Number) (:performance 'pointed-prompt.core/PerformanceHost)
-            :onclick $ :: 'Fn $ {} (:return 'Unit)
-              :args $ [] 'pointed-prompt.core/DomEventHost
-            :clearPrompt $ :: 'Fn $ {} (:return 'Unit)
-              :args $ []
-          :examples $ []
-          :ffi $ {} (:backend :js) (:kind :external-object) (:target :browser)
-            :names $ {} (:clearPrompt |clearPrompt) (:innerHeight |innerHeight) (:innerWidth |innerWidth)
-            :writable $ #{} :clearPrompt :onclick
-          :schema $ :: 'Trait
+          :schema $ :: 'Ref $ :: 'calcit.core/Option 'js-ffi.browser/DomElementHost
         'clear-prompt! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn clear-prompt! ()
-            when (.some? @*box-root)
+            when (option:some? @*box-root)
               let
-                  root $ .unwrap @*box-root
+                  root $ option:unwrap @*box-root
                   created $ unsafe-coerce
-                    js/parseFloat $ .-createdTime $ .-dataset root
+                    js/parseFloat $ option:unwrap-or (browser/element-data-get root |createdTime) |0
                     , Number
-                  window $ unsafe-coerce js/window WindowHost
-                  duration $ -
-                    .now $ .-performance window
-                    , created
-                when (> duration 100) (.remove root)
+                  duration $ - (shared/performance-now) created
+                when (> duration 100) (browser/element-remove! root)
             , &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
@@ -142,105 +72,98 @@
         'prompt-at! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn prompt-at! (position options cb)
             let
-                doc $ unsafe-coerce js/document DocumentHost
-                window $ unsafe-coerce js/window WindowHost
-                root $ .createElement doc |div
-                control $ .createElement doc |div
+                root $ browser/create-element |div
+                control $ browser/create-element |div
                 textarea? $ option:unwrap-or (get options :textarea?) false
-                empty-style $ unsafe-coerce ({}) (:: 'Map 'Tag 'Dynamic)
-                input $ .createElement doc $ if textarea? |textarea |input
-                submit $ .createElement doc |a
-                x $ option:unwrap-or (nth position 0) 0
-                y $ option:unwrap-or (nth position 1) 0
-                close $ .createElement doc |span
-                width $ if textarea? 320 240
-                position-style $ unsafe-coerce
-                  {}
-                    :top $ str y |px
-                    :left $ str x |px
-                    :width $ str width |px
-                  :: 'Map 'Tag 'Dynamic
-                horizontal-style $ unsafe-coerce
-                  if
-                    <
-                      - (.-innerWidth window) x
-                      , width
-                    {} (:left |auto) (:right |8px)
-                    , empty-style
-                  :: 'Map 'Tag 'Dynamic
-                vertical-style $ unsafe-coerce
-                  if
-                    <
-                      - (.-innerHeight window) y
-                      , 70
-                    {} (:top |auto) (:bottom |8px)
-                    , empty-style
-                  :: 'Map 'Tag 'Dynamic
-                input-size-style $ unsafe-coerce
-                  {} $ :height $ if textarea? |80px |28px
-                  :: 'Map 'Tag 'Dynamic
-                control-style $ unsafe-coerce
-                  {} $ :justify-content |space-evenly
-                  :: 'Map 'Tag 'Dynamic
-              if (.some? @*box-root)
-                .remove $ .unwrap @*box-root
-              reset! *box-root $ %some root
-              .appendChild root input
-              .appendChild root control
-              .appendChild control close
-              when textarea? $ .appendChild control submit
-              set! (.-innerText submit) |Ok $ .appendChild root control
-              set! (.-style root)
-                style->string $ merge layout-row style-container position-style horizontal-style vertical-style
-              set!
-                .-createdTime $ .-dataset root
-                str $ .now $ .-performance window
-              set! (.-style input)
-                style->string $ merge layout-expand style-input input-size-style $ unsafe-coerce
+                empty-style $ {}
+                custom-style $ unsafe-coerce
                   option:unwrap-or (get options :style) empty-style
                   :: 'Map 'Tag 'Dynamic
-              set! (.-style control)
-                style->string $ merge layout-column control-style
-              set! (.-style close) (style->string style-close)
-              set! (.-placeholder input)
-                unsafe-coerce
-                  option:unwrap-or (get options :placeholder) |text...
-                  , String
-              set! (.-value input)
-                unsafe-coerce
-                  option:unwrap-or (get options :initial) |
-                  , String
-              set! (.-innerText close) "|×"
-              .addEventListener root |click $ fn (event)
-                hint-fn $ {} (:return 'Unit)
-                  :args $ [] 'DomEventHost
-                .stopPropagation event
-              .addEventListener input |keydown $ fn (event)
-                hint-fn $ {} (:return 'Unit)
-                  :args $ [] 'DomEventHost
-                when
-                  and
-                    = |Enter $ .-key event
-                    if textarea? (.-metaKey event) true
-                  cb $ .-value input
-                  .remove root
-                when
-                  = |Escape $ .-key event
-                  .remove root
-                .stopPropagation event
-              .addEventListener close |click $ fn (event)
-                hint-fn $ {} (:return 'Unit)
-                  :args $ [] 'DomEventHost
-                .remove root
+                input-node $ browser/create-element $ if textarea? |textarea |input
+                submit $ browser/create-element |a
+                x $ option:unwrap-or (nth position 0) 0
+                y $ option:unwrap-or (nth position 1) 0
+                close $ browser/create-element |span
+                width $ if textarea? 320 240
+                position-style $ {}
+                  :top $ str y |px
+                  :left $ str x |px
+                  :width $ str width |px
+                horizontal-style $ if
+                  <
+                    - (browser/viewport-width) x
+                    , width
+                  {} (:left |auto) (:right |8px)
+                  , empty-style
+                vertical-style $ if
+                  <
+                    - (browser/viewport-height) y
+                    , 70
+                  {} (:top |auto) (:bottom |8px)
+                  , empty-style
+                input-size-style $ {} $ :height (if textarea? |80px |28px)
+                control-style $ {} $ :justify-content |space-evenly
+              when (option:some? @*box-root)
+                browser/element-remove! $ option:unwrap @*box-root
+              reset! *box-root $ %some root
+              browser/append-child! root input-node
+              browser/append-child! root control
+              browser/append-child! control close
+              when textarea? $ browser/append-child! control submit
+              browser/element-set-text-content! submit |Ok
+              browser/append-child! root control
+              browser/element-set-css-text! root $ style->string $ unsafe-coerce
+                merge layout-row style-container
+                  unsafe-coerce position-style $ :: 'Map 'Tag 'Dynamic
+                  unsafe-coerce horizontal-style $ :: 'Map 'Tag 'Dynamic
+                  unsafe-coerce vertical-style $ :: 'Map 'Tag 'Dynamic
+                :: 'Map 'Tag 'Dynamic
+              browser/element-data-set! root |createdTime $ str $ shared/performance-now
+              browser/element-set-css-text! input-node $ style->string $ unsafe-coerce
+                merge layout-expand style-input
+                  unsafe-coerce input-size-style $ :: 'Map 'Tag 'Dynamic
+                  , custom-style
+                :: 'Map 'Tag 'Dynamic
+              browser/element-set-css-text! control $ style->string $ merge layout-column control-style
+              browser/element-set-css-text! close $ style->string style-close
+              browser/element-set-placeholder! input-node $ unsafe-coerce
+                option:unwrap-or (get options :placeholder) |text...
+                , String
+              browser/element-set-value! input-node $ unsafe-coerce
+                option:unwrap-or (get options :initial) |
+                , String
+              browser/element-set-text-content! close "|×"
+              browser/element-add-event-listener! root |click $ fn (event)
+                do (event .stop-propagation!) &unit
+              browser/element-add-event-listener! input-node |keydown $ fn (event)
+                let
+                    key-event $ browser/keyboard-event-host event
+                  when
+                    and
+                      = |Enter $ key-event :key
+                      if textarea? (key-event :meta-key?) true
+                    do
+                      cb $ option:unwrap-or
+                        js-nullish->option $ input-node :value
+                        , |
+                      browser/element-remove! root
+                  when
+                    = |Escape $ key-event :key
+                    browser/element-remove! root
+                  do (event .stop-propagation!) &unit
+              browser/element-add-event-listener! close |click $ fn (event) (browser/element-remove! root)
               when textarea?
-                set! (.-style submit) (style->string style-submit)
-                .addEventListener submit |click $ fn (event)
-                  hint-fn $ {} (:return 'Unit)
-                    :args $ [] 'DomEventHost
-                  cb $ .-value input
-                  .remove root
-              .appendChild (.-body doc) root
-              .select input
+                browser/element-set-css-text! submit $ style->string style-submit
+                browser/element-add-event-listener! submit |click $ fn (event)
+                  do
+                    cb $ option:unwrap-or
+                      js-nullish->option $ input-node :value
+                      , |
+                    browser/element-remove! root
+              browser/append-child!
+                option:unwrap $ browser/document-body
+                , root
+              browser/element-select! $ browser/selectable-element-host input-node
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ [] (:: 'List 'Number) (:: 'Map 'Tag 'Dynamic)
@@ -279,7 +202,10 @@
           :schema $ :: 'Map 'Tag 'Dynamic
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.core
-          :require $ [] pointed-prompt.util.styles :refer $ [] hsl style->string layout-row layout-column layout-expand font-code font-normal
+          :require
+            [] pointed-prompt.util.styles :refer $ [] hsl style->string layout-row layout-column layout-expand font-code font-normal
+            js-ffi.browser :as browser
+            js-ffi.shared :as shared
     'pointed-prompt.util.styles $ %{} 'FileEntry
       :defs $ {}
         'RegexHost $ %{} 'CodeEntry (:doc |)
