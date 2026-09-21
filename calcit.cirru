@@ -18,8 +18,8 @@
               let
                   mouse $ browser/mouse-event-host event
                 browser/console-log! $ str event
-                do (mouse .prevent-default!) &unit
-                prompt-at!
+                mouse .prevent-default!
+                , &unit $ prompt-at!
                   [] (mouse :client-x) (mouse :client-y)
                   {} $ :textarea? $ > (browser/random) 0.5
                   fn (content)
@@ -133,8 +133,7 @@
                 option:unwrap-or (get options :initial) |
                 , String
               browser/element-set-text-content! close "|×"
-              browser/element-add-event-listener! root |click $ fn (event)
-                do (event .stop-propagation!) &unit
+              browser/element-add-event-listener! root |click $ fn (event) (event .stop-propagation!) &unit
               browser/element-add-event-listener! input-node |keydown $ fn (event)
                 let
                     key-event $ browser/keyboard-event-host event
@@ -150,16 +149,16 @@
                   when
                     = |Escape $ key-event :key
                     browser/element-remove! root
-                  do (event .stop-propagation!) &unit
+                  event .stop-propagation!
+                  , &unit
               browser/element-add-event-listener! close |click $ fn (event) (browser/element-remove! root)
               when textarea?
                 browser/element-set-css-text! submit $ style->string style-submit
                 browser/element-add-event-listener! submit |click $ fn (event)
-                  do
-                    cb $ option:unwrap-or
-                      js-nullish->option $ input-node :value
-                      , |
-                    browser/element-remove! root
+                  cb $ option:unwrap-or
+                    js-nullish->option $ input-node :value
+                    , |
+                  browser/element-remove! root
               browser/append-child!
                 option:unwrap $ browser/document-body
                 , root
@@ -235,10 +234,7 @@
           :schema $ :: 'Trait
         'dashed->camel $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dashed->camel (x)
-            .replaceRegex (unsafe-coerce x StringHost) dashed-letter-pattern $ fn (matched letter offset)
-              hint-fn $ {} (:return 'String)
-                :args $ [] 'String 'String 'Number
-              .toUpperCase $ unsafe-coerce letter StringHost
+            .replaceRegex (unsafe-coerce x StringHost) dashed-letter-pattern uppercase-replacement
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'String)
             :args $ [] 'String
@@ -327,5 +323,12 @@
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'String)
             :args $ [] $ :: 'Map 'Tag 'Dynamic
+        'uppercase-replacement $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn uppercase-replacement (matched letter offset)
+            .toUpperCase $ unsafe-coerce letter StringHost
+          :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'String)
+            :args $ [] 'String 'String 'Number
+            :features $ #{} :js-ffi
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.util.styles
