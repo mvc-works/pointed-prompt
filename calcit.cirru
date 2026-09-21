@@ -237,6 +237,7 @@
             .replaceRegex (unsafe-coerce x StringHost) dashed-letter-pattern $ fn (matched letter offset)
               hint-fn $ {} (:return 'String)
                 :args $ [] 'String 'String 'Number
+                :features $ #{} :js-ffi
               .toUpperCase $ unsafe-coerce letter StringHost
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'String)
