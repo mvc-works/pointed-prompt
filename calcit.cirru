@@ -234,11 +234,7 @@
           :schema $ :: 'Trait
         'dashed->camel $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dashed->camel (x)
-            .replaceRegex (unsafe-coerce x StringHost) dashed-letter-pattern $ fn (matched letter offset)
-              hint-fn $ {} (:return 'String)
-                :args $ [] 'String 'String 'Number
-                :features $ #{} :js-ffi
-              .toUpperCase $ unsafe-coerce letter StringHost
+            .replaceRegex (unsafe-coerce x StringHost) dashed-letter-pattern uppercase-replacement
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'String)
             :args $ [] 'String
@@ -327,5 +323,12 @@
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'String)
             :args $ [] $ :: 'Map 'Tag 'Dynamic
+        'uppercase-replacement $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn uppercase-replacement (matched letter offset)
+            .toUpperCase $ unsafe-coerce letter StringHost
+          :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'String)
+            :args $ [] 'String 'String 'Number
+            :features $ #{} :js-ffi
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.util.styles
