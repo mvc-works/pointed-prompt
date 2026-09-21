@@ -27,6 +27,7 @@ jobs:
         caps --strict --ci
         calcit calcit.cirru edit format
         git diff --exit-code -- calcit.cirru
+        calcit calcit.cirru fix --workflow strict --verify --format edn
         calcit calcit.cirru --check-only
 
     - name: "compiles to js"
@@ -36,6 +37,7 @@ jobs:
 
     - name: Deploy to server
       id: deploy
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: Pendect/action-rsyncer@v1.1.0
       env:
         DEPLOY_KEY: ${{secrets.rsync_private_key}}
