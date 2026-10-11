@@ -220,7 +220,7 @@
             .replaceRegex $ :: 'Fn $ {}
               :args $ [] 'pointed-prompt.util.styles/StringHost 'pointed-prompt.util.styles/RegexHost $ :: 'Fn
                 {} (:return 'String)
-                  :args $ [] 'String 'String 'Number
+                  :args $ [] 'String 'String 'Number 'String
               :return 'String
             .replaceText $ :: 'Fn $ {}
               :args $ [] 'pointed-prompt.util.styles/StringHost 'String 'String
@@ -240,7 +240,7 @@
             :args $ [] 'String
             :features $ #{} :js-ffi
         'dashed-letter-pattern $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ def dashed-letter-pattern (make-regex |-[a-z] |g)
+          :code $ quote $ def dashed-letter-pattern (make-regex "|-([a-z])" |g)
           :examples $ []
           :schema $ :: 'pointed-prompt.util.styles/RegexHost
         'escape-html $ %{} 'CodeEntry (:doc |)
@@ -324,11 +324,11 @@
           :schema $ :: 'Fn $ {} (:return 'String)
             :args $ [] $ :: 'Map 'Tag 'Dynamic
         'uppercase-replacement $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn uppercase-replacement (matched letter offset)
+          :code $ quote $ defn uppercase-replacement (matched letter offset source)
             .toUpperCase $ unsafe-coerce letter StringHost
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'String)
-            :args $ [] 'String 'String 'Number
+            :args $ [] 'String 'String 'Number 'String
             :features $ #{} :js-ffi
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.util.styles
