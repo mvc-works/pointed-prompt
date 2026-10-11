@@ -27,8 +27,8 @@ jobs:
         caps --strict --ci
         calcit calcit.cirru edit format
         git diff --exit-code -- calcit.cirru
-        calcit calcit.cirru fix --workflow strict --verify --format edn
         calcit calcit.cirru --check-only
+        calcit --check-only --ns pointed-prompt.core --ns pointed-prompt.util.styles --ns pointed-prompt.app.main --summary-only --format edn
 
     - name: "compiles to js"
       run: >
