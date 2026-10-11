@@ -1,7 +1,7 @@
 {
-  "version": "0.0.14",
+  "version": "0.0.15",
   "dependencies": {
-    "@calcit/procs": "0.29.0-alpha.30"
+    "@calcit/procs": "0.29.0"
   },
   "packageManager": "yarn@4.18.0",
   "devDependencies": {
