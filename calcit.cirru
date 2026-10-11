@@ -51,7 +51,7 @@
     'pointed-prompt.core $ %{} 'FileEntry
       :defs $ {}
         '*box-root $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defatom *box-root (%none)
+          :code $ quote $ defatom *box-root (Option :none)
           :examples $ []
           :schema $ :: 'Ref $ :: 'calcit.core/Option 'js-ffi.browser/DomElementHost
         'clear-prompt! $ %{} 'CodeEntry (:doc |)
@@ -105,7 +105,7 @@
                 control-style $ {} $ :justify-content |space-evenly
               when (option:some? @*box-root)
                 browser/element-remove! $ option:unwrap @*box-root
-              reset! *box-root $ %some root
+              reset! *box-root $ Option :some root
               browser/append-child! root input-node
               browser/append-child! root control
               browser/append-child! control close
@@ -268,7 +268,7 @@
             cond
                 string? x
                 , x
-              (tag? x) (turn-string x)
+              (tag? x) (to-string x)
               (number? x)
                 if (.test pattern-non-dimension-props prop) (str x) (str x |px)
               true $ str x
@@ -316,7 +316,7 @@
             ->
               map-list-kv styles $ fn (k value)
                 let
-                    style-name $ turn-string k
+                    style-name $ to-string k
                     v $ get-style-value value $ dashed->camel style-name
                   str style-name |: (escape-html v) |;
               join-string |
