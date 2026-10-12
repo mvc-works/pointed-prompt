@@ -26,8 +26,8 @@ clear-prompt!
 ### Toolchain
 
 Use the exact Calcit / `@calcit/procs` version in `deps.cirru` and `package.json`
-(0.29.0), with published js-ffi 0.2.1-alpha.16. The checked JS host adapters
-are supported by the stable toolchain; the module version is 0.0.15.
+(0.29.1), with published js-ffi 0.2.1. The checked JS host adapters
+are supported by the stable toolchain; the module version is 0.0.16.
 The default entry targets the browser. Only `calcit.cirru` and `deps.cirru` are
 source snapshots; generated `js-out/` files stay untracked.
 

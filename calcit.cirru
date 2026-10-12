@@ -51,7 +51,7 @@
     'pointed-prompt.core $ %{} 'FileEntry
       :defs $ {}
         '*box-root $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defatom *box-root (Option :none)
+          :code $ quote $ defref *box-root (Option :none)
           :examples $ []
           :schema $ :: 'Ref $ :: 'calcit.core/Option 'js-ffi.browser/DomElementHost
         'clear-prompt! $ %{} 'CodeEntry (:doc |)
