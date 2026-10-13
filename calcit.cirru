@@ -112,18 +112,9 @@
               when textarea? $ browser/append-child! control submit
               browser/element-set-text-content! submit |Ok
               browser/append-child! root control
-              browser/element-set-css-text! root $ style->string $ unsafe-coerce
-                merge layout-row style-container
-                  unsafe-coerce position-style $ :: 'Map 'Tag 'Dynamic
-                  unsafe-coerce horizontal-style $ :: 'Map 'Tag 'Dynamic
-                  unsafe-coerce vertical-style $ :: 'Map 'Tag 'Dynamic
-                :: 'Map 'Tag 'Dynamic
+              browser/element-set-css-text! root $ style->string $ merge layout-row style-container position-style horizontal-style vertical-style
               browser/element-data-set! root |createdTime $ str $ shared/performance-now
-              browser/element-set-css-text! input-node $ style->string $ unsafe-coerce
-                merge layout-expand style-input
-                  unsafe-coerce input-size-style $ :: 'Map 'Tag 'Dynamic
-                  , custom-style
-                :: 'Map 'Tag 'Dynamic
+              browser/element-set-css-text! input-node $ style->string $ merge layout-expand style-input input-size-style custom-style
               browser/element-set-css-text! control $ style->string $ merge layout-column control-style
               browser/element-set-css-text! close $ style->string style-close
               browser/element-set-placeholder! input-node $ decode-map-as
