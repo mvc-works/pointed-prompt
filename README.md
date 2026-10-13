@@ -10,7 +10,7 @@ Previews http://r.tiye.me/mvc-works/pointed-prompt/ .
 
 ```cirru
 :require
-  pointed-prompt :refer (prompt-at!)
+  pointed-prompt.core :refer $ prompt-at! clear-prompt!
 
 prompt-at! ([] 100 100)
   {}
@@ -19,6 +19,7 @@ prompt-at! ([] 100 100)
     :initial |TODO
   fn (content)
     println content
+    , &unit
 
 clear-prompt!
 ```
@@ -26,8 +27,11 @@ clear-prompt!
 ### Toolchain
 
 Use the exact Calcit / `@calcit/procs` version in `deps.cirru` and `package.json`
-(0.29.1), with published js-ffi 0.2.1. The checked JS host adapters
-are supported by the stable toolchain; the module version is 0.0.16.
+(0.29.1), with published js-ffi 0.2.2. The checked JS host adapters
+are supported by the stable toolchain; the candidate module version is 0.0.17.
+Prompt style, placeholder, initial value and parsed creation time are checked
+at their input boundaries. Vite 8 supports the runtime's import attributes.
+Use the module only after its formal release tag is published.
 The default entry targets the browser. Only `calcit.cirru` and `deps.cirru` are
 source snapshots; generated `js-out/` files stay untracked.
 

@@ -31,13 +31,13 @@
             :args $ []
             :features $ #{} :js-ffi
         'main! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn main! () (load-console-formatter!) (listen!) (println "|App Started")
+          :code $ quote $ defn main! () (load-console-formatter!) (listen!) (println "|App Started") &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
             :features $ #{} :js-ffi
         'reload! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn reload! () (listen!) (println "|Code updated.")
+          :code $ quote $ defn reload! () (listen!) (println "|Code updated.") &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
@@ -59,9 +59,9 @@
             when (option:some? @*box-root)
               let
                   root $ option:unwrap @*box-root
-                  created $ unsafe-coerce
+                  created $ decode-map-as
                     js/parseFloat $ option:unwrap-or (browser/element-data-get root |createdTime) |0
-                    , Number
+                    , 'Number
                   duration $ - (shared/performance-now) created
                 when (> duration 100) (browser/element-remove! root)
             , &unit
@@ -76,7 +76,7 @@
                 control $ browser/create-element |div
                 textarea? $ option:unwrap-or (get options :textarea?) false
                 empty-style $ {}
-                custom-style $ unsafe-coerce
+                custom-style $ decode-map-as
                   option:unwrap-or (get options :style) empty-style
                   :: 'Map 'Tag 'Dynamic
                 input-node $ browser/create-element $ if textarea? |textarea |input
@@ -126,12 +126,12 @@
                 :: 'Map 'Tag 'Dynamic
               browser/element-set-css-text! control $ style->string $ merge layout-column control-style
               browser/element-set-css-text! close $ style->string style-close
-              browser/element-set-placeholder! input-node $ unsafe-coerce
+              browser/element-set-placeholder! input-node $ decode-map-as
                 option:unwrap-or (get options :placeholder) |text...
-                , String
-              browser/element-set-value! input-node $ unsafe-coerce
+                , 'String
+              browser/element-set-value! input-node $ decode-map-as
                 option:unwrap-or (get options :initial) |
-                , String
+                , 'String
               browser/element-set-text-content! close "|×"
               browser/element-add-event-listener! root |click $ fn (event) (event .stop-propagation!) &unit
               browser/element-add-event-listener! input-node |keydown $ fn (event)
