@@ -31,13 +31,13 @@
             :args $ []
             :features $ #{} :js-ffi
         'main! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn main! () (load-console-formatter!) (listen!) (println "|App Started")
+          :code $ quote $ defn main! () (load-console-formatter!) (listen!) (println "|App Started") &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
             :features $ #{} :js-ffi
         'reload! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn reload! () (listen!) (println "|Code updated.")
+          :code $ quote $ defn reload! () (listen!) (println "|Code updated.") &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []
