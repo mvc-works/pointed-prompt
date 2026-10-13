@@ -10,7 +10,7 @@ Previews http://r.tiye.me/mvc-works/pointed-prompt/ .
 
 ```cirru
 :require
-  pointed-prompt :refer (prompt-at!)
+  pointed-prompt.core :refer $ prompt-at! clear-prompt!
 
 prompt-at! ([] 100 100)
   {}
@@ -19,6 +19,7 @@ prompt-at! ([] 100 100)
     :initial |TODO
   fn (content)
     println content
+    , &unit
 
 clear-prompt!
 ```
