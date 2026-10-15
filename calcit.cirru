@@ -56,11 +56,13 @@
           :schema $ :: 'Ref $ :: 'calcit.core/Option 'js-ffi.browser/DomElementHost
         'clear-prompt! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn clear-prompt! ()
-            when (option:some? @*box-root)
+            when (@*box-root .some?)
               let
-                  root $ option:unwrap @*box-root
+                  root $ @*box-root .unwrap
                   created $ decode-map-as
-                    js/parseFloat $ option:unwrap-or (browser/element-data-get root |createdTime) |0
+                    js/parseFloat $
+                      browser/element-data-get root |createdTime
+                      , .unwrap-or |0
                     , 'Number
                   duration $ - (shared/performance-now) created
                 when (> duration 100) (browser/element-remove! root)
@@ -74,15 +76,23 @@
             let
                 root $ browser/create-element |div
                 control $ browser/create-element |div
-                textarea? $ option:unwrap-or (get options :textarea?) false
+                textarea? $ match (get options :textarea?)
+                  (:some value) value
+                  (:none) false
                 empty-style $ {}
                 custom-style $ decode-map-as
-                  option:unwrap-or (get options :style) empty-style
+                  match (get options :style)
+                    (:some value) value
+                    (:none) empty-style
                   :: 'Map 'Tag 'Dynamic
                 input-node $ browser/create-element $ if textarea? |textarea |input
                 submit $ browser/create-element |a
-                x $ option:unwrap-or (nth position 0) 0
-                y $ option:unwrap-or (nth position 1) 0
+                x $
+                  nth position 0
+                  , .unwrap-or 0
+                y $
+                  nth position 1
+                  , .unwrap-or 0
                 close $ browser/create-element |span
                 width $ if textarea? 320 240
                 position-style $ {}
@@ -103,8 +113,8 @@
                   , empty-style
                 input-size-style $ {} $ :height (if textarea? |80px |28px)
                 control-style $ {} $ :justify-content |space-evenly
-              when (option:some? @*box-root)
-                browser/element-remove! $ option:unwrap @*box-root
+              when (@*box-root .some?)
+                browser/element-remove! $ @*box-root .unwrap
               reset! *box-root $ Option :some root
               browser/append-child! root input-node
               browser/append-child! root control
@@ -118,10 +128,14 @@
               browser/element-set-css-text! control $ style->string $ merge layout-column control-style
               browser/element-set-css-text! close $ style->string style-close
               browser/element-set-placeholder! input-node $ decode-map-as
-                option:unwrap-or (get options :placeholder) |text...
+                match (get options :placeholder)
+                  (:some value) value
+                  (:none) |text...
                 , 'String
               browser/element-set-value! input-node $ decode-map-as
-                option:unwrap-or (get options :initial) |
+                match (get options :initial)
+                  (:some value) value
+                  (:none) |
                 , 'String
               browser/element-set-text-content! close "|×"
               browser/element-add-event-listener! root |click $ fn (event) (event .stop-propagation!) &unit
@@ -133,9 +147,10 @@
                       = |Enter $ key-event :key
                       if textarea? (key-event :meta-key?) true
                     do
-                      cb $ option:unwrap-or
+                      cb $ match
                         js-nullish->option $ input-node :value
-                        , |
+                        (:some value) value
+                        (:none) |
                       browser/element-remove! root
                   when
                     = |Escape $ key-event :key
@@ -146,12 +161,14 @@
               when textarea?
                 browser/element-set-css-text! submit $ style->string style-submit
                 browser/element-add-event-listener! submit |click $ fn (event)
-                  cb $ option:unwrap-or
+                  cb $ match
                     js-nullish->option $ input-node :value
-                    , |
+                    (:some value) value
+                    (:none) |
                   browser/element-remove! root
               browser/append-child!
-                option:unwrap $ browser/document-body
+                  browser/document-body
+                  , .unwrap
                 , root
               browser/element-select! $ browser/selectable-element-host input-node
           :examples $ []
@@ -193,7 +210,7 @@
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.core
           :require
-            [] pointed-prompt.util.styles :refer $ [] hsl style->string layout-row layout-column layout-expand font-code font-normal
+            pointed-prompt.util.styles :refer $ hsl style->string layout-row layout-column layout-expand font-code font-normal
             js-ffi.browser :as browser
             js-ffi.shared :as shared
     'pointed-prompt.util.styles $ %{} 'FileEntry
@@ -270,7 +287,9 @@
         'hsl $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn hsl (h s l & more)
             let
-                a $ option:unwrap-or (first more) 1
+                a $
+                  first more
+                  , .unwrap-or 1
               str "|hsl(" h |, s |%, l |%, a "|)"
           :examples $ []
           :schema $ :: 'Fn $ {} (:rest 'Number) (:return 'String)
@@ -279,7 +298,7 @@
           :code $ quote $ def layout-column
             {} (:display |flex) (:align-items |stretch) (:flex-direction |column)
           :examples $ []
-          :schema $ :: 'Map 'Tag 'Dynamic
+          :schema $ :: 'Map 'Tag 'String
         'layout-expand $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def layout-expand
             {} (:flex 1) (:overflow :auto)
@@ -289,7 +308,7 @@
           :code $ quote $ def layout-row
             {} (:display |flex) (:align-items |stretch) (:flex-direction |row)
           :examples $ []
-          :schema $ :: 'Map 'Tag 'Dynamic
+          :schema $ :: 'Map 'Tag 'String
         'make-regex $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn make-regex (pattern flags)
             unsafe-coerce (new js/RegExp pattern flags) RegexHost
