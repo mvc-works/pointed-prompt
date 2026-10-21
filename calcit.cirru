@@ -76,9 +76,11 @@
             let
                 root $ browser/create-element |div
                 control $ browser/create-element |div
-                textarea? $ match (get options :textarea?)
-                  (:some value) value
-                  (:none) false
+                textarea? $ decode-map-as
+                  match (get options :textarea?)
+                    (:some value) value
+                    (:none) false
+                  , 'Bool
                 empty-style $ {}
                 custom-style $ decode-map-as
                   match (get options :style)
