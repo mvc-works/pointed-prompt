@@ -43,9 +43,9 @@ jobs:
         caps verify --toolchain
         calcit calcit.cirru edit format
         git diff --exit-code -- calcit.cirru
-        calcit calcit.cirru fix --workflow strict --verify --format edn
+        calcit calcit.cirru fix --workflow strict --verify --format json > /tmp/pointed-prompt-strict.json
+        jq -e '.data.workflow.status == "passed" and (.diagnostics | length == 0)' /tmp/pointed-prompt-strict.json
         calcit calcit.cirru --check-only --all-defs
-        calcit --check-only --ns pointed-prompt.core --ns pointed-prompt.util.styles --ns pointed-prompt.app.main --summary-only --format edn
         calcit analyze weak-types --only deprecated-call --summary-only --format json | jq -e '.data.summary.calls == 0'
 
     - name: Select frontend CDN path
