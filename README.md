@@ -26,13 +26,13 @@ clear-prompt!
 
 ### Toolchain
 
-使用者影响：候选 0.0.20 配对正式 Calcit/procs 0.30.1 与 JS-FFI 0.2.5。prompt 的有效输入、样式、初值、placeholder、回调及关闭行为不变；相对已发布的 0.0.19，`:textarea?` 在入口检查 Bool，缺省仍为 false，显式 nil 或其他类型会更早报错。strict Caps 消费者需配套对齐工具链和传递依赖，不能与旧 JS-FFI 图混装。0.0.19 已正式发布、tag 内容不变；0.0.20 仍待正式发版，下游不要引用候选 main/hash。
+使用者影响：候选 0.0.21 继续配对正式 Calcit/procs 0.30.1，只将 JS-FFI 更新至已发布的 0.2.6。源码与已发布 0.0.20 完全相同；样式、初值、placeholder、回调及关闭行为不变。strict Caps 消费者需要同步整个依赖图、重新生成 JS；正式 0.0.21 tag 发布前不要引用候选 main/hash。既有 0.0.20 tag 不改动。
 
 正式 CLI 验收使用 Linux CI。macOS 本地旧图的 alpha.5 基线不能替代正式版验证；使用前请检查 0.30.1 release 是否提供目标平台资产，不从本项目的 CI 推断跨平台支持。
 
 Use the exact Calcit / `@calcit/procs` version in `deps.cirru` and `package.json`
-(0.30.1), with published js-ffi 0.2.5. The candidate module version is
-0.0.20, not yet released; existing 0.0.19 remains unchanged. The textarea flag is
+(0.30.1), with published js-ffi 0.2.6. Candidate module 0.0.21 only updates
+the dependency graph; its source is identical to published 0.0.20. The textarea flag is
 checked as Bool while a missing flag still defaults to false. Linux CI does
 not certify platform assets that are absent from the formal release.
 Prompt style, placeholder, initial value and parsed creation time are checked
@@ -53,7 +53,7 @@ Frontend bundles use the repository's COS CDN prefix, with only the upload
 action's built-in public verification. PR uploads have isolated run prefixes
 and never deploy the page. Production retains the original server directory
 and checks the current main revision before uploading. Remote CI, public
-uploads and formal 0.0.20 publication are tracked by the candidate PR; local
+uploads and formal 0.0.21 publication are tracked by the candidate PR; local
 browser validation does not itself prove a public upload or production deploy.
 
 旧 alpha.5 图的完整 strict 基线包含 13 条类型审阅记录（7 处显式
