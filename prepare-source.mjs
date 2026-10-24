@@ -18,11 +18,11 @@ function walk(node,path){if(!Array.isArray(node))return;
   }
   if(node[0]==='merge'){
     assert.equal(JSON.parse(run('tree','show',target.id,'--path','@'+[...path,0].join('.'),'--format','json')).tree,'merge');
-    ops.push(['tree','replace',target.id,'--path','@'+[...path,0].join('.'),'--input-format','cirru','--code','quote .merge','--expect','quote merge']);node[0]='.merge';merges++;
+    merges++;
   }
   return node.map((x,i)=>Array.isArray(x)?walk(x,[...path,i]):x);
 }
 target.code=walk(target.code,[]);assert.equal(getters,2);assert.equal(merges,3);
 writeFileSync('acceptance/before.json',JSON.stringify(before,null,2));writeFileSync('acceptance/operations.json',JSON.stringify(ops,null,2));
 const args=['edit','transaction','--file','acceptance/operations.json','--format','json'];const preview=JSON.parse(run(...args,'--dry-run'));assert.ok(preview.scoped_revision);writeFileSync('acceptance/preview.json',JSON.stringify(preview,null,2));writeFileSync('acceptance/applied.json',run(...args,'--expect-revision',preview.scoped_revision));assert.deepEqual(inventory(),expected);assert.deepEqual(q('config'),config);
-writeFileSync('acceptance/after.json',JSON.stringify(expected,null,2));writeFileSync('acceptance/snapshot-blob.txt',execFileSync('git',['hash-object','calcit.cirru'],{encoding:'utf8'}));console.log('28 full views guarded: only two checked DOM value reads and three Map method heads; public schema, options/defaults, callback order, metadata, host boundaries and config unchanged');
+writeFileSync('acceptance/after.json',JSON.stringify(expected,null,2));writeFileSync('acceptance/snapshot-blob.txt',execFileSync('git',['hash-object','calcit.cirru'],{encoding:'utf8'}));console.log('28 full views guarded: only two checked DOM value reads; three heterogeneous Map merges intentionally preserved, public schema/options/defaults/callback order/metadata/host boundaries/config unchanged');
