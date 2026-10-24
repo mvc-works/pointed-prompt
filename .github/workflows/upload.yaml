@@ -38,13 +38,20 @@ jobs:
 
     - name: validate snapshot
       run: |
+        set -euo pipefail
         caps --strict --ci
         yarn install --immutable
         caps verify --toolchain
         calcit calcit.cirru edit format
-        git diff --exit-code -- calcit.cirru
-        calcit calcit.cirru fix --workflow strict --verify --format json > /tmp/pointed-prompt-strict.json
-        jq -e '.data.workflow.status == "passed" and (.diagnostics | length == 0)' /tmp/pointed-prompt-strict.json
+        if ! git diff --quiet --exit-code -- calcit.cirru; then
+          echo '::error::calcit.cirru is not canonical; run the pinned Calcit edit format and commit its reviewed result.'
+          exit 1
+        fi
+        strict_exit=0
+        strict_report="$(calcit fix --workflow strict --verify --format json)" || strict_exit=$?
+        printf '%s\n' "$strict_report"
+        test "$strict_exit" -eq 0
+        jq -e '.data.workflow.status? == "passed" and .diagnostics? == []' <<< "$strict_report"
         calcit calcit.cirru --check-only --all-defs
         calcit analyze weak-types --only deprecated-call --summary-only --format json | jq -e '.data.summary.calls == 0'
 
@@ -79,6 +86,15 @@ jobs:
         if [[ "$GITHUB_SHA" == "$current_sha" ]]; then
           echo "current=true" >> "$GITHUB_OUTPUT"
         fi
+
+    - name: Retain tested PR build
+      if: github.event_name == 'pull_request'
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pointed-prompt-preview
+        path: dist
+        if-no-files-found: error
+        retention-days: 7
 
     - name: Upload and verify frontend assets
       if: steps.production.outputs.current == 'true' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
