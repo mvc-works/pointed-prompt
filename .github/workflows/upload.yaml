@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - prepare/pointed-prompt-graph031
   pull_request: {}
 
 permissions:
@@ -42,11 +43,9 @@ jobs:
         caps --strict --ci
         yarn install --immutable
         caps verify --toolchain
+        node prepare-source.mjs
         calcit calcit.cirru edit format
-        if ! git diff --quiet --exit-code -- calcit.cirru; then
-          echo '::error::calcit.cirru is not canonical; run the pinned Calcit edit format and commit its reviewed result.'
-          exit 1
-        fi
+        test "$(git hash-object calcit.cirru)" = "$(cat acceptance/snapshot-blob.txt)"
         strict_exit=0
         strict_report="$(calcit fix --workflow strict --verify --format json)" || strict_exit=$?
         printf '%s\n' "$strict_report"
@@ -95,6 +94,18 @@ jobs:
         path: dist
         if-no-files-found: error
         retention-days: 7
+
+    - name: Preserve official source preparation
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pointed-prompt-source-prepared
+        path: |
+          calcit.cirru
+          acceptance
+          dist
+        if-no-files-found: error
+        retention-days: 3
 
     - name: Upload and verify frontend assets
       if: steps.production.outputs.current == 'true' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)

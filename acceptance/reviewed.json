@@ -1,0 +1,2190 @@
+[
+  {
+    "code": [
+      "def",
+      "calcit-dirname",
+      "|"
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.$meta/calcit-dirname",
+    "js_ffi": null,
+    "schema": null,
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "calcit-filename",
+      "|calcit.cirru"
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.$meta/calcit-filename",
+    "js_ffi": null,
+    "schema": null,
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "listen!",
+      [],
+      [
+        "browser/add-event-listener!",
+        "|click",
+        [
+          "fn",
+          [
+            "event"
+          ],
+          [
+            "hint-fn",
+            [
+              "{}",
+              [
+                ":return",
+                "'Unit"
+              ],
+              [
+                ":args",
+                [
+                  "[]",
+                  "'js-ffi.browser/EventHost"
+                ]
+              ]
+            ]
+          ],
+          [
+            "let",
+            [
+              [
+                "mouse",
+                [
+                  "browser/mouse-event-host",
+                  "event"
+                ]
+              ]
+            ],
+            [
+              "browser/console-log!",
+              [
+                "str",
+                "event"
+              ]
+            ],
+            [
+              "mouse",
+              ".prevent-default!"
+            ],
+            "&unit",
+            [
+              "prompt-at!",
+              [
+                "[]",
+                [
+                  "mouse",
+                  ":client-x"
+                ],
+                [
+                  "mouse",
+                  ":client-y"
+                ]
+              ],
+              [
+                "{}",
+                [
+                  ":textarea?",
+                  [
+                    ">",
+                    [
+                      "browser/random"
+                    ],
+                    "0.5"
+                  ]
+                ]
+              ],
+              [
+                "fn",
+                [
+                  "content"
+                ],
+                [
+                  "hint-fn",
+                  [
+                    "{}",
+                    [
+                      ":return",
+                      "'Unit"
+                    ],
+                    [
+                      ":args",
+                      [
+                        "[]",
+                        "'String"
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "browser/console-log!",
+                  "content"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.app.main/listen!",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Unit"
+      ],
+      [
+        ":args",
+        [
+          "[]"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "main!",
+      [],
+      [
+        "load-console-formatter!"
+      ],
+      [
+        "listen!"
+      ],
+      [
+        "println",
+        "|App Started"
+      ],
+      "&unit"
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.app.main/main!",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Unit"
+      ],
+      [
+        ":args",
+        [
+          "[]"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "reload!",
+      [],
+      [
+        "listen!"
+      ],
+      [
+        "println",
+        "|Code updated."
+      ],
+      "&unit"
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.app.main/reload!",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Unit"
+      ],
+      [
+        ":args",
+        [
+          "[]"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defref",
+      "*box-root",
+      [
+        "Option",
+        ":none"
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.core/*box-root",
+    "js_ffi": null,
+    "schema": [
+      "::",
+      "'Ref",
+      [
+        "::",
+        "'calcit.core/Option",
+        "'js-ffi.browser/DomElementHost"
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "clear-prompt!",
+      [],
+      [
+        "when",
+        [
+          "@*box-root",
+          ".some?"
+        ],
+        [
+          "let",
+          [
+            [
+              "root",
+              [
+                "@*box-root",
+                ".unwrap"
+              ]
+            ],
+            [
+              "created",
+              [
+                "decode-map-as",
+                [
+                  "js/parseFloat",
+                  [
+                    [
+                      "browser/element-data-get",
+                      "root",
+                      "|createdTime"
+                    ],
+                    ".unwrap-or",
+                    "|0"
+                  ]
+                ],
+                "'Number"
+              ]
+            ],
+            [
+              "duration",
+              [
+                "-",
+                [
+                  "shared/performance-now"
+                ],
+                "created"
+              ]
+            ]
+          ],
+          [
+            "when",
+            [
+              ">",
+              "duration",
+              "100"
+            ],
+            [
+              "browser/element-remove!",
+              "root"
+            ]
+          ]
+        ]
+      ],
+      "&unit"
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.core/clear-prompt!",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Unit"
+      ],
+      [
+        ":args",
+        [
+          "[]"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "prompt-at!",
+      [
+        "position",
+        "options",
+        "cb"
+      ],
+      [
+        "let",
+        [
+          [
+            "root",
+            [
+              "browser/create-element",
+              "|div"
+            ]
+          ],
+          [
+            "control",
+            [
+              "browser/create-element",
+              "|div"
+            ]
+          ],
+          [
+            "textarea?",
+            [
+              "decode-map-as",
+              [
+                "match",
+                [
+                  "get",
+                  "options",
+                  ":textarea?"
+                ],
+                [
+                  [
+                    ":some",
+                    "value"
+                  ],
+                  "value"
+                ],
+                [
+                  [
+                    ":none"
+                  ],
+                  "false"
+                ]
+              ],
+              "'Bool"
+            ]
+          ],
+          [
+            "empty-style",
+            [
+              "{}"
+            ]
+          ],
+          [
+            "custom-style",
+            [
+              "decode-map-as",
+              [
+                "match",
+                [
+                  "get",
+                  "options",
+                  ":style"
+                ],
+                [
+                  [
+                    ":some",
+                    "value"
+                  ],
+                  "value"
+                ],
+                [
+                  [
+                    ":none"
+                  ],
+                  "empty-style"
+                ]
+              ],
+              [
+                "::",
+                "'Map",
+                "'Tag",
+                "'Dynamic"
+              ]
+            ]
+          ],
+          [
+            "input-node",
+            [
+              "browser/create-element",
+              [
+                "if",
+                "textarea?",
+                "|textarea",
+                "|input"
+              ]
+            ]
+          ],
+          [
+            "submit",
+            [
+              "browser/create-element",
+              "|a"
+            ]
+          ],
+          [
+            "x",
+            [
+              [
+                "nth",
+                "position",
+                "0"
+              ],
+              ".unwrap-or",
+              "0"
+            ]
+          ],
+          [
+            "y",
+            [
+              [
+                "nth",
+                "position",
+                "1"
+              ],
+              ".unwrap-or",
+              "0"
+            ]
+          ],
+          [
+            "close",
+            [
+              "browser/create-element",
+              "|span"
+            ]
+          ],
+          [
+            "width",
+            [
+              "if",
+              "textarea?",
+              "320",
+              "240"
+            ]
+          ],
+          [
+            "position-style",
+            [
+              "{}",
+              [
+                ":top",
+                [
+                  "str",
+                  "y",
+                  "|px"
+                ]
+              ],
+              [
+                ":left",
+                [
+                  "str",
+                  "x",
+                  "|px"
+                ]
+              ],
+              [
+                ":width",
+                [
+                  "str",
+                  "width",
+                  "|px"
+                ]
+              ]
+            ]
+          ],
+          [
+            "horizontal-style",
+            [
+              "if",
+              [
+                "<",
+                [
+                  "-",
+                  [
+                    "browser/viewport-width"
+                  ],
+                  "x"
+                ],
+                "width"
+              ],
+              [
+                "{}",
+                [
+                  ":left",
+                  "|auto"
+                ],
+                [
+                  ":right",
+                  "|8px"
+                ]
+              ],
+              "empty-style"
+            ]
+          ],
+          [
+            "vertical-style",
+            [
+              "if",
+              [
+                "<",
+                [
+                  "-",
+                  [
+                    "browser/viewport-height"
+                  ],
+                  "y"
+                ],
+                "70"
+              ],
+              [
+                "{}",
+                [
+                  ":top",
+                  "|auto"
+                ],
+                [
+                  ":bottom",
+                  "|8px"
+                ]
+              ],
+              "empty-style"
+            ]
+          ],
+          [
+            "input-size-style",
+            [
+              "{}",
+              [
+                ":height",
+                [
+                  "if",
+                  "textarea?",
+                  "|80px",
+                  "|28px"
+                ]
+              ]
+            ]
+          ],
+          [
+            "control-style",
+            [
+              "{}",
+              [
+                ":justify-content",
+                "|space-evenly"
+              ]
+            ]
+          ]
+        ],
+        [
+          "when",
+          [
+            "@*box-root",
+            ".some?"
+          ],
+          [
+            "browser/element-remove!",
+            [
+              "@*box-root",
+              ".unwrap"
+            ]
+          ]
+        ],
+        [
+          "reset!",
+          "*box-root",
+          [
+            "Option",
+            ":some",
+            "root"
+          ]
+        ],
+        [
+          "browser/append-child!",
+          "root",
+          "input-node"
+        ],
+        [
+          "browser/append-child!",
+          "root",
+          "control"
+        ],
+        [
+          "browser/append-child!",
+          "control",
+          "close"
+        ],
+        [
+          "when",
+          "textarea?",
+          [
+            "browser/append-child!",
+            "control",
+            "submit"
+          ]
+        ],
+        [
+          "browser/element-set-text-content!",
+          "submit",
+          "|Ok"
+        ],
+        [
+          "browser/append-child!",
+          "root",
+          "control"
+        ],
+        [
+          "browser/element-set-css-text!",
+          "root",
+          [
+            "style->string",
+            [
+              "merge",
+              "layout-row",
+              "style-container",
+              "position-style",
+              "horizontal-style",
+              "vertical-style"
+            ]
+          ]
+        ],
+        [
+          "browser/element-data-set!",
+          "root",
+          "|createdTime",
+          [
+            "str",
+            [
+              "shared/performance-now"
+            ]
+          ]
+        ],
+        [
+          "browser/element-set-css-text!",
+          "input-node",
+          [
+            "style->string",
+            [
+              "merge",
+              "layout-expand",
+              "style-input",
+              "input-size-style",
+              "custom-style"
+            ]
+          ]
+        ],
+        [
+          "browser/element-set-css-text!",
+          "control",
+          [
+            "style->string",
+            [
+              "merge",
+              "layout-column",
+              "control-style"
+            ]
+          ]
+        ],
+        [
+          "browser/element-set-css-text!",
+          "close",
+          [
+            "style->string",
+            "style-close"
+          ]
+        ],
+        [
+          "browser/element-set-placeholder!",
+          "input-node",
+          [
+            "decode-map-as",
+            [
+              "match",
+              [
+                "get",
+                "options",
+                ":placeholder"
+              ],
+              [
+                [
+                  ":some",
+                  "value"
+                ],
+                "value"
+              ],
+              [
+                [
+                  ":none"
+                ],
+                "|text..."
+              ]
+            ],
+            "'String"
+          ]
+        ],
+        [
+          "browser/element-set-value!",
+          "input-node",
+          [
+            "decode-map-as",
+            [
+              "match",
+              [
+                "get",
+                "options",
+                ":initial"
+              ],
+              [
+                [
+                  ":some",
+                  "value"
+                ],
+                "value"
+              ],
+              [
+                [
+                  ":none"
+                ],
+                "|"
+              ]
+            ],
+            "'String"
+          ]
+        ],
+        [
+          "browser/element-set-text-content!",
+          "close",
+          "|×"
+        ],
+        [
+          "browser/element-add-event-listener!",
+          "root",
+          "|click",
+          [
+            "fn",
+            [
+              "event"
+            ],
+            [
+              "event",
+              ".stop-propagation!"
+            ],
+            "&unit"
+          ]
+        ],
+        [
+          "browser/element-add-event-listener!",
+          "input-node",
+          "|keydown",
+          [
+            "fn",
+            [
+              "event"
+            ],
+            [
+              "let",
+              [
+                [
+                  "key-event",
+                  [
+                    "browser/keyboard-event-host",
+                    "event"
+                  ]
+                ]
+              ],
+              [
+                "when",
+                [
+                  "and",
+                  [
+                    "=",
+                    "|Enter",
+                    [
+                      "key-event",
+                      ":key"
+                    ]
+                  ],
+                  [
+                    "if",
+                    "textarea?",
+                    [
+                      "key-event",
+                      ":meta-key?"
+                    ],
+                    "true"
+                  ]
+                ],
+                [
+                  "do",
+                  [
+                    "cb",
+                    [
+                      "match",
+                      [
+                        "js-nullish->option",
+                        [
+                          "input-node",
+                          ":value"
+                        ]
+                      ],
+                      [
+                        [
+                          ":some",
+                          "value"
+                        ],
+                        "value"
+                      ],
+                      [
+                        [
+                          ":none"
+                        ],
+                        "|"
+                      ]
+                    ]
+                  ],
+                  [
+                    "browser/element-remove!",
+                    "root"
+                  ]
+                ]
+              ],
+              [
+                "when",
+                [
+                  "=",
+                  "|Escape",
+                  [
+                    "key-event",
+                    ":key"
+                  ]
+                ],
+                [
+                  "browser/element-remove!",
+                  "root"
+                ]
+              ],
+              [
+                "event",
+                ".stop-propagation!"
+              ],
+              "&unit"
+            ]
+          ]
+        ],
+        [
+          "browser/element-add-event-listener!",
+          "close",
+          "|click",
+          [
+            "fn",
+            [
+              "event"
+            ],
+            [
+              "browser/element-remove!",
+              "root"
+            ]
+          ]
+        ],
+        [
+          "when",
+          "textarea?",
+          [
+            "browser/element-set-css-text!",
+            "submit",
+            [
+              "style->string",
+              "style-submit"
+            ]
+          ],
+          [
+            "browser/element-add-event-listener!",
+            "submit",
+            "|click",
+            [
+              "fn",
+              [
+                "event"
+              ],
+              [
+                "cb",
+                [
+                  "match",
+                  [
+                    "js-nullish->option",
+                    [
+                      "input-node",
+                      ":value"
+                    ]
+                  ],
+                  [
+                    [
+                      ":some",
+                      "value"
+                    ],
+                    "value"
+                  ],
+                  [
+                    [
+                      ":none"
+                    ],
+                    "|"
+                  ]
+                ]
+              ],
+              [
+                "browser/element-remove!",
+                "root"
+              ]
+            ]
+          ]
+        ],
+        [
+          "browser/append-child!",
+          [
+            [
+              "browser/document-body"
+            ],
+            ".unwrap"
+          ],
+          "root"
+        ],
+        [
+          "browser/element-select!",
+          [
+            "browser/selectable-element-host",
+            "input-node"
+          ]
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.core/prompt-at!",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Unit"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          [
+            "::",
+            "'List",
+            "'Number"
+          ],
+          [
+            "::",
+            "'Map",
+            "'Tag",
+            "'Dynamic"
+          ],
+          [
+            "::",
+            "'Fn",
+            [
+              "{}",
+              [
+                ":return",
+                "'Unit"
+              ],
+              [
+                ":args",
+                [
+                  "[]",
+                  "'String"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "style-close",
+      [
+        "{}",
+        [
+          ":margin-left",
+          "8"
+        ],
+        [
+          ":font-family",
+          "|Helvetica, sans-serif"
+        ],
+        [
+          ":font-size",
+          "24"
+        ],
+        [
+          ":font-weight",
+          "100"
+        ],
+        [
+          ":color",
+          [
+            "hsl",
+            "0",
+            "80",
+            "80"
+          ]
+        ],
+        [
+          ":cursor",
+          ":pointer"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.core/style-close",
+    "js_ffi": null,
+    "schema": [
+      "::",
+      "'Map",
+      "'Tag",
+      "'Dynamic"
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "style-container",
+      [
+        "{}",
+        [
+          ":position",
+          ":absolute"
+        ],
+        [
+          ":padding",
+          "|10px 12px"
+        ],
+        [
+          ":background-color",
+          [
+            "hsl",
+            "0",
+            "0",
+            "30",
+            "0.9"
+          ]
+        ],
+        [
+          ":border",
+          [
+            "str",
+            "|1px solid ",
+            [
+              "hsl",
+              "0",
+              "0",
+              "30"
+            ]
+          ]
+        ],
+        [
+          ":width",
+          "240"
+        ],
+        [
+          ":border-radius",
+          "|2px"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.core/style-container",
+    "js_ffi": null,
+    "schema": [
+      "::",
+      "'Map",
+      "'Tag",
+      "'Dynamic"
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "style-input",
+      [
+        "{}",
+        [
+          ":outline",
+          ":none"
+        ],
+        [
+          ":font-family",
+          "font-normal"
+        ],
+        [
+          ":line-height",
+          "|20px"
+        ],
+        [
+          ":font-size",
+          "14"
+        ],
+        [
+          ":padding",
+          "|6px 8px"
+        ],
+        [
+          ":width",
+          "|100%"
+        ],
+        [
+          ":border-radius",
+          "|2px"
+        ],
+        [
+          ":border",
+          ":none"
+        ],
+        [
+          ":height",
+          "28"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.core/style-input",
+    "js_ffi": null,
+    "schema": [
+      "::",
+      "'Map",
+      "'Tag",
+      "'Dynamic"
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "style-submit",
+      [
+        "{}",
+        [
+          ":margin-left",
+          "8"
+        ],
+        [
+          ":color",
+          [
+            "hsl",
+            "200",
+            "80",
+            "80"
+          ]
+        ],
+        [
+          ":cursor",
+          ":pointer"
+        ],
+        [
+          ":font-size",
+          "14"
+        ],
+        [
+          ":font-family",
+          "font-normal"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.core/style-submit",
+    "js_ffi": null,
+    "schema": [
+      "::",
+      "'Map",
+      "'Tag",
+      "'Dynamic"
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "deftrait",
+      "RegexHost",
+      [
+        ".test",
+        [
+          "::",
+          "'Fn",
+          [
+            "{}",
+            [
+              ":args",
+              [
+                "[]",
+                "'pointed-prompt.util.styles/RegexHost",
+                "'String"
+              ]
+            ],
+            [
+              ":return",
+              "'Bool"
+            ]
+          ]
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": {
+      ":backend": {
+        "__edn_tag": "js"
+      },
+      ":kind": {
+        "__edn_tag": "external-object"
+      },
+      ":target": {
+        "__edn_tag": "browser"
+      }
+    },
+    "ffi_edn": "{} (:backend :js) (:kind :external-object) (:target :browser)",
+    "id": "pointed-prompt.util.styles/RegexHost",
+    "js_ffi": null,
+    "schema": "'Trait",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "deftrait",
+      "StringHost",
+      [
+        ".replaceRegex",
+        [
+          "::",
+          "'Fn",
+          [
+            "{}",
+            [
+              ":args",
+              [
+                "[]",
+                "'pointed-prompt.util.styles/StringHost",
+                "'pointed-prompt.util.styles/RegexHost",
+                [
+                  "::",
+                  "'Fn",
+                  [
+                    "{}",
+                    [
+                      ":return",
+                      "'String"
+                    ],
+                    [
+                      ":args",
+                      [
+                        "[]",
+                        "'String",
+                        "'String",
+                        "'Number",
+                        "'String"
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              ":return",
+              "'String"
+            ]
+          ]
+        ]
+      ],
+      [
+        ".replaceText",
+        [
+          "::",
+          "'Fn",
+          [
+            "{}",
+            [
+              ":args",
+              [
+                "[]",
+                "'pointed-prompt.util.styles/StringHost",
+                "'String",
+                "'String"
+              ]
+            ],
+            [
+              ":return",
+              "'String"
+            ]
+          ]
+        ]
+      ],
+      [
+        ".toUpperCase",
+        [
+          "::",
+          "'Fn",
+          [
+            "{}",
+            [
+              ":args",
+              [
+                "[]",
+                "'pointed-prompt.util.styles/StringHost"
+              ]
+            ],
+            [
+              ":return",
+              "'String"
+            ]
+          ]
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": {
+      ":backend": {
+        "__edn_tag": "js"
+      },
+      ":kind": {
+        "__edn_tag": "external-object"
+      },
+      ":names": {
+        ":replaceRegex": "replace",
+        ":replaceText": "replace",
+        ":toUpperCase": "toUpperCase"
+      },
+      ":target": {
+        "__edn_tag": "browser"
+      }
+    },
+    "ffi_edn": "{} (:backend :js) (:kind :external-object) (:target :browser)\n  :names $ {} (:replaceRegex |replace) (:replaceText |replace) (:toUpperCase |toUpperCase)",
+    "id": "pointed-prompt.util.styles/StringHost",
+    "js_ffi": null,
+    "schema": "'Trait",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "dashed->camel",
+      [
+        "x"
+      ],
+      [
+        ".replaceRegex",
+        [
+          "unsafe-coerce",
+          "x",
+          "StringHost"
+        ],
+        "dashed-letter-pattern",
+        "uppercase-replacement"
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/dashed->camel",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'String"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          "'String"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "dashed-letter-pattern",
+      [
+        "make-regex",
+        "|-([a-z])",
+        "|g"
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/dashed-letter-pattern",
+    "js_ffi": null,
+    "schema": "'pointed-prompt.util.styles/RegexHost",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "escape-html",
+      [
+        "text"
+      ],
+      [
+        "let",
+        [
+          [
+            "source",
+            [
+              "unsafe-coerce",
+              "text",
+              "StringHost"
+            ]
+          ],
+          [
+            "escaped-quote",
+            [
+              ".replaceText",
+              "source",
+              "|\"",
+              "|&quot;"
+            ]
+          ],
+          [
+            "escaped-lt",
+            [
+              ".replaceText",
+              [
+                "unsafe-coerce",
+                "escaped-quote",
+                "StringHost"
+              ],
+              "|<",
+              "|&lt;"
+            ]
+          ],
+          [
+            "escaped-gt",
+            [
+              ".replaceText",
+              [
+                "unsafe-coerce",
+                "escaped-lt",
+                "StringHost"
+              ],
+              "|>",
+              "|&gt;"
+            ]
+          ]
+        ],
+        [
+          ".replaceText",
+          [
+            "unsafe-coerce",
+            "escaped-gt",
+            "StringHost"
+          ],
+          "&newline",
+          "|&#13;&#10;"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/escape-html",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'String"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          "'String"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "font-code",
+      "|Source Code Pro, Menlo, Ubuntu Mono, Consolas, monospace"
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/font-code",
+    "js_ffi": null,
+    "schema": "'String",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "font-normal",
+      "|Hind, Helvatica, Arial, sans-serif"
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/font-normal",
+    "js_ffi": null,
+    "schema": "'String",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "get-style-value",
+      [
+        "x",
+        "prop"
+      ],
+      [
+        "cond",
+        [
+          [
+            "string?",
+            "x"
+          ],
+          "x"
+        ],
+        [
+          [
+            "tag?",
+            "x"
+          ],
+          [
+            "to-string",
+            "x"
+          ]
+        ],
+        [
+          [
+            "number?",
+            "x"
+          ],
+          [
+            "if",
+            [
+              ".test",
+              "pattern-non-dimension-props",
+              "prop"
+            ],
+            [
+              "str",
+              "x"
+            ],
+            [
+              "str",
+              "x",
+              "|px"
+            ]
+          ]
+        ],
+        [
+          "true",
+          [
+            "str",
+            "x"
+          ]
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/get-style-value",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'String"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          "'Dynamic",
+          "'String"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "hsl",
+      [
+        "h",
+        "s",
+        "l",
+        "&",
+        "more"
+      ],
+      [
+        "let",
+        [
+          [
+            "a",
+            [
+              [
+                "first",
+                "more"
+              ],
+              ".unwrap-or",
+              "1"
+            ]
+          ]
+        ],
+        [
+          "str",
+          "|hsl(",
+          "h",
+          "|,",
+          "s",
+          "|%,",
+          "l",
+          "|%,",
+          "a",
+          "|)"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/hsl",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":rest",
+        "'Number"
+      ],
+      [
+        ":return",
+        "'String"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          "'Number",
+          "'Number",
+          "'Number"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "layout-column",
+      [
+        "{}",
+        [
+          ":display",
+          "|flex"
+        ],
+        [
+          ":align-items",
+          "|stretch"
+        ],
+        [
+          ":flex-direction",
+          "|column"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/layout-column",
+    "js_ffi": null,
+    "schema": [
+      "::",
+      "'Map",
+      "'Tag",
+      "'String"
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "layout-expand",
+      [
+        "{}",
+        [
+          ":flex",
+          "1"
+        ],
+        [
+          ":overflow",
+          ":auto"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/layout-expand",
+    "js_ffi": null,
+    "schema": [
+      "::",
+      "'Map",
+      "'Tag",
+      "'Dynamic"
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "layout-row",
+      [
+        "{}",
+        [
+          ":display",
+          "|flex"
+        ],
+        [
+          ":align-items",
+          "|stretch"
+        ],
+        [
+          ":flex-direction",
+          "|row"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/layout-row",
+    "js_ffi": null,
+    "schema": [
+      "::",
+      "'Map",
+      "'Tag",
+      "'String"
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "make-regex",
+      [
+        "pattern",
+        "flags"
+      ],
+      [
+        "unsafe-coerce",
+        [
+          "new",
+          "js/RegExp",
+          "pattern",
+          "flags"
+        ],
+        "RegexHost"
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/make-regex",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'pointed-prompt.util.styles/RegexHost"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          "'String",
+          "'String"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "pattern-non-dimension-props",
+      [
+        "make-regex",
+        "|acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera",
+        "|i"
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/pattern-non-dimension-props",
+    "js_ffi": null,
+    "schema": "'pointed-prompt.util.styles/RegexHost",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "style->string",
+      [
+        "styles"
+      ],
+      [
+        "->",
+        [
+          "map-list-kv",
+          "styles",
+          [
+            "fn",
+            [
+              "k",
+              "value"
+            ],
+            [
+              "let",
+              [
+                [
+                  "style-name",
+                  [
+                    "to-string",
+                    "k"
+                  ]
+                ],
+                [
+                  "v",
+                  [
+                    "get-style-value",
+                    "value",
+                    [
+                      "dashed->camel",
+                      "style-name"
+                    ]
+                  ]
+                ]
+              ],
+              [
+                "str",
+                "style-name",
+                "|:",
+                [
+                  "escape-html",
+                  "v"
+                ],
+                "|;"
+              ]
+            ]
+          ]
+        ],
+        [
+          "join-string",
+          "|"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/style->string",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'String"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          [
+            "::",
+            "'Map",
+            "'Tag",
+            "'Dynamic"
+          ]
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "uppercase-replacement",
+      [
+        "matched",
+        "letter",
+        "offset",
+        "source"
+      ],
+      [
+        ".toUpperCase",
+        [
+          "unsafe-coerce",
+          "letter",
+          "StringHost"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "pointed-prompt.util.styles/uppercase-replacement",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'String"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          "'String",
+          "'String",
+          "'Number",
+          "'String"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  }
+]
