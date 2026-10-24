@@ -149,10 +149,7 @@
                       = |Enter $ key-event :key
                       if textarea? (key-event :meta-key?) true
                     do
-                      cb $ match
-                        js-nullish->option $ input-node :value
-                        (:some value) value
-                        (:none) |
+                      cb $ browser/element-value input-node
                       browser/element-remove! root
                   when
                     = |Escape $ key-event :key
@@ -163,10 +160,7 @@
               when textarea?
                 browser/element-set-css-text! submit $ style->string style-submit
                 browser/element-add-event-listener! submit |click $ fn (event)
-                  cb $ match
-                    js-nullish->option $ input-node :value
-                    (:some value) value
-                    (:none) |
+                  cb $ browser/element-value input-node
                   browser/element-remove! root
               browser/append-child!
                   browser/document-body
