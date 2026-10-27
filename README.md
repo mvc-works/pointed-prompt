@@ -24,14 +24,18 @@ prompt-at! ([] 100 100)
 clear-prompt!
 ```
 
-### Toolchain
+### 当前工具链与使用者影响
+
+CLI / `@calcit/procs` 从正式 0.30.1 成对升级到正式 0.31.0；js-ffi 仍使用已发布 0.2.6。消费者需同步工具链并重新生成 JS，候选尚未发布新的模块 tag。源码、公开参数、回调及关闭顺序保持不变；原三处 `merge` 有意合并异构样式，不机械改为限制首个 Map 值类型的 `.merge`。保留原完整 strict、默认审计及宿主边界，不添加检查脚本、强转或预算例外。本轮不合并、生产部署或发版。
+
+### 历史：0.30.1 工具链迁移
 
 使用者影响：候选 0.0.21 继续配对正式 Calcit/procs 0.30.1，将 JS-FFI 更新至已发布的 0.2.6。两处提交路径改用受检的 `browser/element-value`，不再从所有 Element 上假设存在输入框专属 `value`。正常 input/textarea 的样式、初值、placeholder、回调及关闭顺序不变；异常缺失或非 String 值现在明确报错，不再回落为空串。strict Caps 消费者需要同步整个依赖图、重新生成 JS；正式 0.0.21 tag 发布前不要引用候选 main/hash。既有 0.0.20 tag 不改动。
 
 正式 CLI 验收使用 Linux CI。macOS 本地旧图的 alpha.5 基线不能替代正式版验证；使用前请检查 0.30.1 release 是否提供目标平台资产，不从本项目的 CI 推断跨平台支持。
 
 Use the exact Calcit / `@calcit/procs` version in `deps.cirru` and `package.json`
-(0.30.1), with published js-ffi 0.2.6. Candidate module 0.0.21 uses checked
+(currently 0.31.0), with published js-ffi 0.2.6. Candidate module 0.0.21 uses checked
 `element-value` reads on both submit paths. Normal input/textarea behavior is
 unchanged; a missing or non-String host value raises instead of defaulting to an
 empty string. The textarea flag is
