@@ -26,55 +26,15 @@ clear-prompt!
 
 ### 当前工具链与使用者影响
 
-CLI / `@calcit/procs` 成对使用正式 0.31.0，js-ffi 使用已发布的 0.2.6。模块版本以 `deps.cirru` 和对应 tag 为准；消费者同步依赖图后重新生成 JS。公开参数、回调及关闭顺序保持不变；三处 `merge` 合并真实的异构样式，继续使用现有合同。完整 strict、默认审计、宿主边界和发布前精确 main CI 是验收依据。
+候选 **0.0.23** 使用正式 **Calcit / @calcit/procs 0.31.0**，JS-FFI更新至真实声明0.31的已发布 **0.2.7**。消费者应整图同步、重新生成JS并重启开发服务；候选发布前不要引用main/hash。
 
-下方 0.30.1 / alpha 迁移记录用于解释已有行为，不作为当前版本、发布状态或部署授权的来源。
+Snapshot与已发布0.0.22相同，公开参数、正常input/textarea样式、初值、placeholder、回调及关闭顺序均保持。两条提交路径继续用受检browser/element-value：缺失或非String值明确报错；textarea?缺省为false，存在时须为Bool，显式nil不静默替换。
 
-### 历史：0.30.1 工具链迁移
+三个public merge仍用于真实异构样式组合。接收者.merge固定首张String值Map的类型，机械替换会改变可接受值域；保持现有合同，不增加强转或放宽schema。String/RegExp宿主与开放样式/选项Map仍是真实边界，背景见[JS-FFI #183](https://github.com/calcit-lang/js-ffi/issues/183)，不宣称类型债务清零。原首个字符串替换语义不改为全量替换。
 
-使用者影响：候选 0.0.21 继续配对正式 Calcit/procs 0.30.1，将 JS-FFI 更新至已发布的 0.2.6。两处提交路径改用受检的 `browser/element-value`，不再从所有 Element 上假设存在输入框专属 `value`。正常 input/textarea 的样式、初值、placeholder、回调及关闭顺序不变；异常缺失或非 String 值现在明确报错，不再回落为空串。strict Caps 消费者需要同步整个依赖图、重新生成 JS；正式 0.0.21 tag 发布前不要引用候选 main/hash。既有 0.0.20 tag 不改动。
+原完整strict、默认审计、不可变lock和部署门禁保持，不新增脚本/测试框架。原项目没有附带测试套件；当前依赖图已通过实际浏览器单行Enter、多行Ok/Meta+Enter、Unicode回调及Escape/关闭不提交验收。Demo原有stringify PointerEvent警告如实保留，不宣称零警告。
 
-正式 CLI 验收使用 Linux CI。macOS 本地旧图的 alpha.5 基线不能替代正式版验证；使用前请检查 0.30.1 release 是否提供目标平台资产，不从本项目的 CI 推断跨平台支持。
-
-Use the exact Calcit / `@calcit/procs` version in `deps.cirru` and `package.json`
-(currently 0.31.0), with published js-ffi 0.2.6. Candidate module 0.0.21 uses checked
-`element-value` reads on both submit paths. Normal input/textarea behavior is
-unchanged; a missing or non-String host value raises instead of defaulting to an
-empty string. The textarea flag is
-checked as Bool while a missing flag still defaults to false. Linux CI does
-not certify platform assets that are absent from the formal release.
-Prompt style, placeholder, initial value and parsed creation time are checked
-at their input boundaries. Vite 8 supports the runtime's import attributes.
-Use the module only after its formal release tag is published.
-Option reads use receiver methods when the payload is known and explicit
-`match` for open payloads. Missing keys retain their defaults; present nil is
-not silently replaced. The two string-only layout maps have String value
-contracts; heterogeneous style maps and the open options Map remain open.
-Restart an existing Vite service after upgrading procs; use `yarn vite --force`
-if it still serves the previous runtime's prebuilt cache.
-The 0.29.2 migration removes six obsolete unsafe style-merge coercions;
-the original style values, precedence and checked option boundaries remain.
-The three public `merge` calls intentionally unify String-only layout maps with
-heterogeneous style maps. Receiver `.merge` fixes the first map's String value
-type, so replacing these calls mechanically is not valid; keep the existing
-contracts rather than widening schemas or adding casts.
-The default entry targets the browser. `calcit.cirru` is program source and
-`deps.cirru` holds toolchain/module metadata; generated `js-out/` stays untracked.
-
-Frontend bundles use the repository's COS CDN prefix, with only the upload
-action's built-in public verification. PR uploads have isolated run prefixes
-and never deploy the page. Production retains the original server directory
-and checks the current main revision before uploading. Remote CI, public
-uploads and formal 0.0.21 publication are tracked by the candidate PR; local
-browser validation does not itself prove a public upload or production deploy.
-
-旧 alpha.5 图的完整 strict 基线包含 13 条类型审阅记录（7 处显式
-String/Regex host 边界、6 处开放样式 Map）；本轮不修改这些实现或伪称消除边界。
-共享 String/RegExp 适配需求已反馈 [JS-FFI #183](https://github.com/calcit-lang/js-ffi/issues/183)；
-不为清零伪造类型，也不把旧的首个替换悄悄换成全量替换。
-原项目没有附带测试套件；上一轮 alpha.5 本地实际浏览器验证单行 Enter、多行 Ok/Meta+Enter、
-Unicode 回调、Escape 不提交和关闭按钮。Demo 原有 stringify PointerEvent 警告仍在，
-不宣称零警告，也不将旧图浏览器验收视为新正式依赖图的验收。未新增验证脚本；原部署路径、上传范围和 COS 内置校验保持不变。
+Node.js24、Yarn4.18.0和Vite版本保持。只维护calcit.cirru/deps.cirru，生成js-out不入库。PR仅按原隔离前缀上传前端assets，COS Action内置verify；生产保留原目录并检查main revision，不增加重复校验脚本，也不将本地验收当作公共上传/部署证明。
 
 ```bash
 caps --strict --ci
