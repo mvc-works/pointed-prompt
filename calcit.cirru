@@ -13,8 +13,7 @@
         'listen! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn listen! ()
             browser/add-event-listener! |click $ fn (event)
-              hint-fn $ {} (:return 'Unit)
-                :args $ [] 'js-ffi.browser/EventHost
+              hint-fn $ Fn js-ffi.browser/EventHost $ -> Unit
               let
                   mouse $ browser/mouse-event-host event
                 browser/console-log! $ str event
@@ -23,25 +22,18 @@
                   [] (mouse :client-x) (mouse :client-y)
                   {} $ :textarea? $ > (browser/random) 0.5
                   fn (content)
-                    hint-fn $ {} (:return 'Unit)
-                      :args $ [] 'String
+                    hint-fn $ Fn String $ -> Unit
                     browser/console-log! content
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! () (load-console-formatter!) (listen!) (println "|App Started") &unit
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () (listen!) (println "|Code updated.") &unit
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.app.main
           :require
@@ -53,7 +45,7 @@
         '*box-root $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defref *box-root (Option :none)
           :examples $ []
-          :schema $ :: 'Ref $ :: 'calcit.core/Option 'js-ffi.browser/DomElementHost
+          :schema $ quote $ Ref (calcit.core/Option js-ffi.browser/DomElementHost)
         'clear-prompt! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn clear-prompt! ()
             when (@*box-root .some?)
@@ -68,9 +60,7 @@
                 when (> duration 100) (browser/element-remove! root)
             , &unit
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'prompt-at! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn prompt-at! (position options cb)
             let
@@ -168,18 +158,17 @@
                 , root
               browser/element-select! $ browser/selectable-element-host input-node
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ [] (:: 'List 'Number) (:: 'Map 'Tag 'Dynamic)
-              :: 'Fn $ {} (:return 'Unit)
-                :args $ [] 'String
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (List Number) (Map Tag Dynamic)
+            Fn String $ -> Unit
+            -> Unit
+            :features :js-ffi
         'style-close $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def style-close
             {} (:margin-left 8) (:font-family "|Helvetica, sans-serif") (:font-size 24) (:font-weight 100)
               :color $ hsl 0 80 80
               :cursor :pointer
           :examples $ []
-          :schema $ :: 'Map 'Tag 'Dynamic
+          :schema $ quote $ Map Tag Dynamic
         'style-container $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def style-container
             {} (:position :absolute) (:padding "|10px 12px")
@@ -188,12 +177,12 @@
               :width 240
               :border-radius |2px
           :examples $ []
-          :schema $ :: 'Map 'Tag 'Dynamic
+          :schema $ quote $ Map Tag Dynamic
         'style-input $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def style-input
             {} (:outline :none) (:font-family font-normal) (:line-height |20px) (:font-size 14) (:padding "|6px 8px") (:width |100%) (:border-radius |2px) (:border :none) (:height 28)
           :examples $ []
-          :schema $ :: 'Map 'Tag 'Dynamic
+          :schema $ quote $ Map Tag Dynamic
         'style-submit $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def style-submit
             {} (:margin-left 8)
@@ -202,7 +191,7 @@
               :font-size 14
               :font-family font-normal
           :examples $ []
-          :schema $ :: 'Map 'Tag 'Dynamic
+          :schema $ quote $ Map Tag Dynamic
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.core
           :require
@@ -213,40 +202,30 @@
       :defs $ {}
         'RegexHost $ %{} 'CodeEntry (:doc |)
           :code $ quote $ deftrait RegexHost
-            .test $ :: 'Fn $ {}
-              :args $ [] 'pointed-prompt.util.styles/RegexHost 'String
-              :return 'Bool
+            .test $ quote $ Fn pointed-prompt.util.styles/RegexHost String (-> Bool)
           :examples $ []
           :ffi $ {} (:backend :js) (:kind :external-object) (:target :browser)
-          :schema $ :: 'Trait
+          :schema $ quote Trait
         'StringHost $ %{} 'CodeEntry (:doc |)
           :code $ quote $ deftrait StringHost
-            .replaceRegex $ :: 'Fn $ {}
-              :args $ [] 'pointed-prompt.util.styles/StringHost 'pointed-prompt.util.styles/RegexHost $ :: 'Fn
-                {} (:return 'String)
-                  :args $ [] 'String 'String 'Number 'String
-              :return 'String
-            .replaceText $ :: 'Fn $ {}
-              :args $ [] 'pointed-prompt.util.styles/StringHost 'String 'String
-              :return 'String
-            .toUpperCase $ :: 'Fn $ {}
-              :args $ [] 'pointed-prompt.util.styles/StringHost
-              :return 'String
+            .replaceRegex $ quote $ Fn pointed-prompt.util.styles/StringHost pointed-prompt.util.styles/RegexHost
+              Fn String String Number String $ -> String
+              -> String
+            .replaceText $ quote $ Fn pointed-prompt.util.styles/StringHost String String (-> String)
+            .toUpperCase $ quote $ Fn pointed-prompt.util.styles/StringHost (-> String)
           :examples $ []
           :ffi $ {} (:backend :js) (:kind :external-object) (:target :browser)
             :names $ {} (:replaceRegex |replace) (:replaceText |replace) (:toUpperCase |toUpperCase)
-          :schema $ :: 'Trait
+          :schema $ quote Trait
         'dashed->camel $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dashed->camel (x)
             .replaceRegex (unsafe-coerce x StringHost) dashed-letter-pattern uppercase-replacement
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'String)
-            :args $ [] 'String
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn String (-> String) (:features :js-ffi)
         'dashed-letter-pattern $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def dashed-letter-pattern (make-regex "|-([a-z])" |g)
           :examples $ []
-          :schema $ :: 'pointed-prompt.util.styles/RegexHost
+          :schema $ quote pointed-prompt.util.styles/RegexHost
         'escape-html $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn escape-html (text)
             let
@@ -256,17 +235,15 @@
                 escaped-gt $ .replaceText (unsafe-coerce escaped-lt StringHost) |> |&gt;
               .replaceText (unsafe-coerce escaped-gt StringHost) &newline |&#13;&#10;
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'String)
-            :args $ [] 'String
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn String (-> String) (:features :js-ffi)
         'font-code $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def font-code "|Source Code Pro, Menlo, Ubuntu Mono, Consolas, monospace"
           :examples $ []
-          :schema $ :: 'String
+          :schema $ quote String
         'font-normal $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def font-normal "|Hind, Helvatica, Arial, sans-serif"
           :examples $ []
-          :schema $ :: 'String
+          :schema $ quote String
         'get-style-value $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn get-style-value (x prop)
             cond
@@ -277,9 +254,7 @@
                 if (.test pattern-non-dimension-props prop) (str x) (str x |px)
               true $ str x
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'String)
-            :args $ [] 'Dynamic 'String
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn Dynamic String (-> String) (:features :js-ffi)
         'hsl $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn hsl (h s l & more)
             let
@@ -288,35 +263,32 @@
                   , .unwrap-or 1
               str "|hsl(" h |, s |%, l |%, a "|)"
           :examples $ []
-          :schema $ :: 'Fn $ {} (:rest 'Number) (:return 'String)
-            :args $ [] 'Number 'Number 'Number
+          :schema $ quote $ Fn Number Number Number & Number (-> String)
         'layout-column $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def layout-column
             {} (:display |flex) (:align-items |stretch) (:flex-direction |column)
           :examples $ []
-          :schema $ :: 'Map 'Tag 'String
+          :schema $ quote $ Map Tag String
         'layout-expand $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def layout-expand
             {} (:flex 1) (:overflow :auto)
           :examples $ []
-          :schema $ :: 'Map 'Tag 'Dynamic
+          :schema $ quote $ Map Tag Dynamic
         'layout-row $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def layout-row
             {} (:display |flex) (:align-items |stretch) (:flex-direction |row)
           :examples $ []
-          :schema $ :: 'Map 'Tag 'String
+          :schema $ quote $ Map Tag String
         'make-regex $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn make-regex (pattern flags)
             unsafe-coerce (new js/RegExp pattern flags) RegexHost
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'pointed-prompt.util.styles/RegexHost)
-            :args $ [] 'String 'String
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn String String (-> pointed-prompt.util.styles/RegexHost) (:features :js-ffi)
         'pattern-non-dimension-props $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def pattern-non-dimension-props
             make-regex "|acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera" |i
           :examples $ []
-          :schema $ :: 'pointed-prompt.util.styles/RegexHost
+          :schema $ quote pointed-prompt.util.styles/RegexHost
         'style->string $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn style->string (styles)
             ->
@@ -327,14 +299,11 @@
                   str style-name |: (escape-html v) |;
               join-string |
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'String)
-            :args $ [] $ :: 'Map 'Tag 'Dynamic
+          :schema $ quote $ Fn (Map Tag Dynamic) (-> String)
         'uppercase-replacement $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn uppercase-replacement (matched letter offset source)
             .toUpperCase $ unsafe-coerce letter StringHost
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'String)
-            :args $ [] 'String 'String 'Number 'String
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn String String Number String (-> String) (:features :js-ffi)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.util.styles
