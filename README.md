@@ -29,7 +29,7 @@ clear-prompt!
 候选 **0.0.25** 配对正式 **Calcit / @calcit/procs 0.34.1** 与 **JS-FFI 0.2.10**。消费者应同步精确依赖图、重新生成 JS 并刷新页面。options 和样式仍保留原开放值入口，未新增 union 接受范围限制。
 
 
-此前已通过官方formatter更新Snapshot类型语法；本轮配对升级不改Snapshot（26个定义的代码、schema和测试均不变）。0.31.0使用者继续使用已发布0.0.23。公开参数、正常input/textarea样式、初值、placeholder、回调及关闭顺序均保持。两条提交路径继续用受检browser/element-value：缺失或非String值明确报错；textarea?缺省为false，存在时须为Bool，显式nil不静默替换。
+此前已通过官方formatter更新Snapshot类型语法；本轮由官方 formatter 更新 canonical 类型写法；归一化对照确认 26 个定义的代码、schema 和测试语义均未改变。0.31.0使用者继续使用已发布0.0.23。公开参数、正常input/textarea样式、初值、placeholder、回调及关闭顺序均保持。两条提交路径继续用受检browser/element-value：缺失或非String值明确报错；textarea?缺省为false，存在时须为Bool，显式nil不静默替换。
 
 三个public merge仍用于真实异构样式组合。接收者.merge固定首张String值Map的类型，机械替换会改变可接受值域；保持现有合同，不增加强转或放宽schema。String/RegExp宿主与开放样式/选项Map仍是真实边界，背景见[JS-FFI #183](https://github.com/calcit-lang/js-ffi/issues/183)，不宣称类型债务清零。原首个字符串替换语义不改为全量替换。
 

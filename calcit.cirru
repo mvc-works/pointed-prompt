@@ -76,7 +76,7 @@
                   match (get options :style)
                     (:some value) value
                     (:none) empty-style
-                  :: 'Map 'Tag 'Dynamic
+                  quote $ Map Tag Dynamic
                 input-node $ browser/create-element $ if textarea? |textarea |input
                 submit $ browser/create-element |a
                 x $
