@@ -33,7 +33,7 @@ clear-prompt!
 
 三个public merge仍用于真实异构样式组合。接收者.merge固定首张String值Map的类型，机械替换会改变可接受值域；保持现有合同，不增加强转或放宽schema。String/RegExp宿主与开放样式/选项Map仍是真实边界，背景见[JS-FFI #183](https://github.com/calcit-lang/js-ffi/issues/183)，不宣称类型债务清零。原首个字符串替换语义不改为全量替换。
 
-原完整strict、默认审计、不可变lock和部署门禁保持，不新增脚本/测试框架。原项目没有附带测试套件；本轮 0.34.2 已通过正式 Caps strict/toolchain、Yarn immutable、28/28 全定义、完整 strict（diagnostics=[]）、deprecated-call=0 和构建。Snapshot 字节保持，不声称存在或通过空测试套件。浏览器交互本轮尚未复验；此前的实际浏览器单行Enter、多行Ok/Meta+Enter、Unicode回调、Escape/关闭不提交及刷新启动验收均通过。Demo原有stringify PointerEvent警告如实保留，不宣称零警告。
+原完整strict、默认审计、不可变lock和部署门禁保持，不新增脚本/测试框架。原项目没有附带测试套件；本轮 0.34.2 已通过正式 Caps strict/toolchain、Yarn immutable、28/28 全定义、完整 strict（diagnostics=[]）、deprecated-call=0 和构建。Snapshot 字节保持，不声称存在或通过空测试套件。本候选已在全新临时 Chrome 156 headless profile 验收：真实 DOM 的初值/placeholder、单行 Enter、多行换行与 Ok/Meta+Enter、Unicode 回调、Escape/关闭不提交、替换/重复 clear 和刷新启动均通过。仅使用合成文本与隔离来源，不代表实体移动设备或所有浏览器均已验收。Demo原有stringify PointerEvent警告如实保留，不宣称零警告。
 
 Node.js24、Yarn4.18.0和Vite版本保持。只维护calcit.cirru/deps.cirru，生成js-out不入库。PR仅按原隔离前缀上传前端assets，COS Action内置verify；生产保留原目录并检查main revision，不增加重复校验脚本，也不将本地验收当作公共上传/部署证明。
 
