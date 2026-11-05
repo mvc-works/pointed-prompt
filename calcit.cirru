@@ -76,7 +76,7 @@
                   match (get options :style)
                     (:some value) value
                     (:none) empty-style
-                  quote $ Map Tag Dynamic
+                  Map Tag Dynamic
                 input-node $ browser/create-element $ if textarea? |textarea |input
                 submit $ browser/create-element |a
                 x $
@@ -202,17 +202,17 @@
       :defs $ {}
         'RegexHost $ %{} 'CodeEntry (:doc |)
           :code $ quote $ deftrait RegexHost
-            .test $ quote $ Fn pointed-prompt.util.styles/RegexHost String (-> Bool)
+            .test $ Fn pointed-prompt.util.styles/RegexHost String $ -> Bool
           :examples $ []
           :ffi $ {} (:backend :js) (:kind :external-object) (:target :browser)
           :schema $ quote Trait
         'StringHost $ %{} 'CodeEntry (:doc |)
           :code $ quote $ deftrait StringHost
-            .replaceRegex $ quote $ Fn pointed-prompt.util.styles/StringHost pointed-prompt.util.styles/RegexHost
+            .replaceRegex $ Fn pointed-prompt.util.styles/StringHost pointed-prompt.util.styles/RegexHost
               Fn String String Number String $ -> String
               -> String
-            .replaceText $ quote $ Fn pointed-prompt.util.styles/StringHost String String (-> String)
-            .toUpperCase $ quote $ Fn pointed-prompt.util.styles/StringHost (-> String)
+            .replaceText $ Fn pointed-prompt.util.styles/StringHost String String $ -> String
+            .toUpperCase $ Fn pointed-prompt.util.styles/StringHost $ -> String
           :examples $ []
           :ffi $ {} (:backend :js) (:kind :external-object) (:target :browser)
             :names $ {} (:replaceRegex |replace) (:replaceText |replace) (:toUpperCase |toUpperCase)
