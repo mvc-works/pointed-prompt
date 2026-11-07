@@ -263,7 +263,7 @@
                   , .unwrap-or 1
               str "|hsl(" h |, s |%, l |%, a "|)"
           :examples $ []
-          :schema $ quote $ Fn Number Number Number & Number (-> String)
+          :schema $ quote $ Fn Number Number Number (& Number) (-> String)
         'layout-column $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def layout-column
             {} (:display |flex) (:align-items |stretch) (:flex-direction |column)
