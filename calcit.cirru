@@ -71,12 +71,10 @@
                     (:some value) value
                     (:none) false
                   , 'Bool
-                empty-style $ {}
-                custom-style $ decode-map-as
-                  match (get options :style)
-                    (:some value) value
-                    (:none) empty-style
-                  Map Tag Dynamic
+                empty-style $ assert-type ({}) (Map Tag pointed-prompt.util.styles/CssValue)
+                custom-style $ match (get options :style)
+                  (:some value) (normalize-custom-style value)
+                  (:none) empty-style
                 input-node $ browser/create-element $ if textarea? |textarea |input
                 submit $ browser/create-element |a
                 x $
@@ -168,7 +166,7 @@
               :color $ hsl 0 80 80
               :cursor :pointer
           :examples $ []
-          :schema $ quote $ Map Tag Dynamic
+          :schema $ quote $ Map Tag pointed-prompt.util.styles/CssValue
         'style-container $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def style-container
             {} (:position :absolute) (:padding "|10px 12px")
@@ -177,12 +175,12 @@
               :width 240
               :border-radius |2px
           :examples $ []
-          :schema $ quote $ Map Tag Dynamic
+          :schema $ quote $ Map Tag pointed-prompt.util.styles/CssValue
         'style-input $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def style-input
             {} (:outline :none) (:font-family font-normal) (:line-height |20px) (:font-size 14) (:padding "|6px 8px") (:width |100%) (:border-radius |2px) (:border :none) (:height 28)
           :examples $ []
-          :schema $ quote $ Map Tag Dynamic
+          :schema $ quote $ Map Tag pointed-prompt.util.styles/CssValue
         'style-submit $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def style-submit
             {} (:margin-left 8)
@@ -191,15 +189,19 @@
               :font-size 14
               :font-family font-normal
           :examples $ []
-          :schema $ quote $ Map Tag Dynamic
+          :schema $ quote $ Map Tag pointed-prompt.util.styles/CssValue
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.core
           :require
-            pointed-prompt.util.styles :refer $ hsl style->string layout-row layout-column layout-expand font-code font-normal
+            pointed-prompt.util.styles :refer $ hsl style->string normalize-custom-style layout-row layout-column layout-expand font-code font-normal
             js-ffi.browser :as browser
             js-ffi.shared :as shared
     'pointed-prompt.util.styles $ %{} 'FileEntry
       :defs $ {}
+        'CssValue $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defunion CssValue String Tag Number
+          :examples $ []
+          :schema $ quote UnionDef
         'RegexHost $ %{} 'CodeEntry (:doc |)
           :code $ quote $ deftrait RegexHost
             .test $ Fn pointed-prompt.util.styles/RegexHost String $ -> Bool
@@ -246,15 +248,13 @@
           :schema $ quote String
         'get-style-value $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn get-style-value (x prop)
-            cond
-                string? x
-                , x
-              (tag? x) (to-string x)
-              (number? x)
-                if (.test pattern-non-dimension-props prop) (str x) (str x |px)
-              true $ str x
+            match x
+              (String text) text
+              (Tag name) (to-string name)
+              (Number size)
+                if (.test pattern-non-dimension-props prop) (str size) (str size |px)
           :examples $ []
-          :schema $ quote $ Fn Dynamic String (-> String) (:features :js-ffi)
+          :schema $ quote $ Fn pointed-prompt.util.styles/CssValue String (-> String) (:features :js-ffi)
         'hsl $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn hsl (h s l & more)
             let
@@ -268,22 +268,36 @@
           :code $ quote $ def layout-column
             {} (:display |flex) (:align-items |stretch) (:flex-direction |column)
           :examples $ []
-          :schema $ quote $ Map Tag String
+          :schema $ quote $ Map Tag pointed-prompt.util.styles/CssValue
         'layout-expand $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def layout-expand
             {} (:flex 1) (:overflow :auto)
           :examples $ []
-          :schema $ quote $ Map Tag Dynamic
+          :schema $ quote $ Map Tag pointed-prompt.util.styles/CssValue
         'layout-row $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def layout-row
             {} (:display |flex) (:align-items |stretch) (:flex-direction |row)
           :examples $ []
-          :schema $ quote $ Map Tag String
+          :schema $ quote $ Map Tag pointed-prompt.util.styles/CssValue
         'make-regex $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn make-regex (pattern flags)
             unsafe-coerce (new js/RegExp pattern flags) RegexHost
           :examples $ []
           :schema $ quote $ Fn String String (-> pointed-prompt.util.styles/RegexHost) (:features :js-ffi)
+        'normalize-custom-style $ %{} 'CodeEntry
+          :doc "|Keep the public custom-style fallback for non-CSS values at the options boundary."
+          :code $ quote $ defn normalize-custom-style (value)
+            filter-map-kv
+              decode-map-as value $ Map Tag Dynamic
+              fn (key item)
+                hint-fn $ Fn Tag Dynamic $ -> (MapEntryDecision Tag pointed-prompt.util.styles/CssValue)
+                match (try-decode-map-as item 'pointed-prompt.util.styles/CssValue)
+                  (:ok css) (MapEntryDecision :keep key css)
+                  (:err _)
+                    MapEntryDecision :keep key $ str item
+          :examples $ []
+          :schema $ quote $ Fn Dynamic
+            -> $ Map Tag pointed-prompt.util.styles/CssValue
         'pattern-non-dimension-props $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def pattern-non-dimension-props
             make-regex "|acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera" |i
@@ -299,7 +313,7 @@
                   str style-name |: (escape-html v) |;
               join-string |
           :examples $ []
-          :schema $ quote $ Fn (Map Tag Dynamic) (-> String)
+          :schema $ quote $ Fn (Map Tag pointed-prompt.util.styles/CssValue) (-> String)
         'uppercase-replacement $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn uppercase-replacement (matched letter offset source)
             .toUpperCase $ unsafe-coerce letter StringHost
