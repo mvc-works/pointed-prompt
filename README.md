@@ -26,10 +26,23 @@ clear-prompt!
 
 ### 当前工具链与使用者影响
 
-使用正式 Calcit / `@calcit/procs` 0.40.0 和 JS FFI 0.2.13。升级后请同步依赖并重新生成 JS。
+使用正式 Calcit / `@calcit/procs` 0.41.0 和 JS FFI 0.2.13。升级后请同步依赖并重新生成 JS。
 
-`prompt-at!` 继续接收现有选项。内置样式和序列化工具使用由 String、Tag 和 Number
-组成的 `CssValue`。自定义样式在入口保留其他值的字符串转换行为。
+`prompt-at!` 继续接收现有 Map 选项并保留默认值。调用方已知选项形状时，可以直接构造
+`PromptOptions` 并调用 `prompt-at-typed!`。具名选项要求提供四个字段，样式值支持
+String、Tag 和 Number。旧入口仍保留其他自定义样式值的字符串转换。
+
+```cirru
+:require
+  pointed-prompt.core :refer $ PromptOptions prompt-at-typed!
+
+prompt-at-typed! ([] 100 100)
+  PromptOptions :textarea? false :placeholder |Enter-text :initial |TODO :style $ {} (:font-size 14)
+  fn (content)
+    hint-fn $ Fn String $ -> Unit
+    println content
+    , &unit
+```
 
 本地使用 Node.js 24 和 Yarn 4.18.0。生成的 `js-out/` 不进入仓库。PR 预览使用
 独立 COS 前缀和 action 内置校验。
