@@ -26,7 +26,7 @@ clear-prompt!
 
 ### 当前工具链与使用者影响
 
-使用正式 Calcit / `@calcit/procs` 0.38.0 和 JS FFI 0.2.13。升级后请同步依赖并重新生成 JS。
+使用正式 Calcit / `@calcit/procs` 0.40.0 和 JS FFI 0.2.13。升级后请同步依赖并重新生成 JS。
 
 `prompt-at!` 继续接收现有选项。内置样式和序列化工具使用由 String、Tag 和 Number
 组成的 `CssValue`。自定义样式在入口保留其他值的字符串转换行为。
