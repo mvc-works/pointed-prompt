@@ -46,6 +46,11 @@
           :code $ quote $ defref *box-root (Option :none)
           :examples $ []
           :schema $ quote $ Ref (calcit.core/Option js-ffi.browser/DomElementHost)
+        'PromptOptions $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defstruct PromptOptions (:textarea? Bool) (:placeholder String) (:initial String)
+            :style $ Map Tag pointed-prompt.util.styles/CssValue
+          :examples $ []
+          :schema $ quote StructDef
         'clear-prompt! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn clear-prompt! ()
             when (@*box-root .some?)
@@ -61,20 +66,33 @@
             , &unit
           :examples $ []
           :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
-        'prompt-at! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn prompt-at! (position options cb)
+        'decode-options $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn decode-options (raw)
             let
+                textarea? $ decode-map-as
+                  .unwrap-or (get raw :textarea?) false
+                  , 'Bool
+                style $ match (get raw :style)
+                  (:some value) (normalize-custom-style value)
+                  (:none) ({})
+                placeholder $ decode-map-as
+                  .unwrap-or (get raw :placeholder) |text...
+                  , 'String
+                initial $ decode-map-as
+                  .unwrap-or (get raw :initial) |
+                  , 'String
+              PromptOptions :textarea? textarea? :style style :placeholder placeholder :initial initial
+          :examples $ []
+          :schema $ quote $ Fn (Map Tag Dynamic) (-> pointed-prompt.core/PromptOptions)
+        'prompt-at! $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn prompt-at! (position raw-options cb)
+            let
+                options $ decode-options raw-options
                 root $ browser/create-element |div
                 control $ browser/create-element |div
-                textarea? $ decode-map-as
-                  match (get options :textarea?)
-                    (:some value) value
-                    (:none) false
-                  , 'Bool
+                textarea? $ :textarea? options
                 empty-style $ assert-type ({}) (Map Tag pointed-prompt.util.styles/CssValue)
-                custom-style $ match (get options :style)
-                  (:some value) (normalize-custom-style value)
-                  (:none) empty-style
+                custom-style $ :style options
                 input-node $ browser/create-element $ if textarea? |textarea |input
                 submit $ browser/create-element |a
                 x $
@@ -117,16 +135,8 @@
               browser/element-set-css-text! input-node $ style->string $ merge layout-expand style-input input-size-style custom-style
               browser/element-set-css-text! control $ style->string $ merge layout-column control-style
               browser/element-set-css-text! close $ style->string style-close
-              browser/element-set-placeholder! input-node $ decode-map-as
-                match (get options :placeholder)
-                  (:some value) value
-                  (:none) |text...
-                , 'String
-              browser/element-set-value! input-node $ decode-map-as
-                match (get options :initial)
-                  (:some value) value
-                  (:none) |
-                , 'String
+              browser/element-set-placeholder! input-node $ :placeholder options
+              browser/element-set-value! input-node $ :initial options
               browser/element-set-text-content! close "|×"
               browser/element-add-event-listener! root |click $ fn (event) (event .stop-propagation!) &unit
               browser/element-add-event-listener! input-node |keydown $ fn (event)
