@@ -18,9 +18,9 @@
                   mouse $ browser/mouse-event-host event
                 browser/console-log! $ str event
                 mouse .prevent-default!
-                , &unit $ prompt-at!
+                , &unit $ prompt-at-typed!
                   [] (mouse :client-x) (mouse :client-y)
-                  {} $ :textarea? $ > (browser/random) 0.5
+                  PromptOptions :style ({}) :placeholder |text... :initial | :textarea? $ > (browser/random) 0.5
                   fn (content)
                     hint-fn $ Fn String $ -> Unit
                     browser/console-log! content
@@ -37,15 +37,15 @@
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.app.main
           :require
-            pointed-prompt.core :refer $ prompt-at! clear-prompt!
+            pointed-prompt.core :refer $ prompt-at-typed! PromptOptions clear-prompt!
             js-ffi.browser :as browser
             js-ffi.shared :as shared
     'pointed-prompt.core $ %{} 'FileEntry
       :defs $ {}
         '*box-root $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defref *box-root (Option :none)
+          :code $ quote $ defref *box-root None
           :examples $ []
-          :schema $ quote $ Ref (calcit.core/Option js-ffi.browser/DomElementHost)
+          :schema $ quote $ Ref (Option browser/DomElementHost)
         'PromptOptions $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defstruct PromptOptions (:textarea? Bool) (:placeholder String) (:initial String)
             :style $ Map Tag pointed-prompt.util.styles/CssValue
@@ -83,11 +83,18 @@
                   , 'String
               PromptOptions :textarea? textarea? :style style :placeholder placeholder :initial initial
           :examples $ []
-          :schema $ quote $ Fn (Map Tag Dynamic) (-> pointed-prompt.core/PromptOptions)
+          :schema $ quote $ Fn (Map Tag Dynamic) (-> PromptOptions)
         'prompt-at! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn prompt-at! (position raw-options cb)
+            prompt-at-typed! position (decode-options raw-options) cb
+          :examples $ []
+          :schema $ quote $ Fn (List Number) (Map Tag Dynamic)
+            Fn String $ -> Unit
+            -> Unit
+            :features :js-ffi
+        'prompt-at-typed! $ %{} 'CodeEntry (:doc "|Open a prompt with already typed options.")
+          :code $ quote $ defn prompt-at-typed! (position options cb)
             let
-                options $ decode-options raw-options
                 root $ browser/create-element |div
                 control $ browser/create-element |div
                 textarea? $ :textarea? options
@@ -123,7 +130,7 @@
                 control-style $ {} $ :justify-content |space-evenly
               when (@*box-root .some?)
                 browser/element-remove! $ @*box-root .unwrap
-              reset! *box-root $ Option :some root
+              reset! *box-root $ Some root
               browser/append-child! root input-node
               browser/append-child! root control
               browser/append-child! control close
@@ -166,7 +173,7 @@
                 , root
               browser/element-select! $ browser/selectable-element-host input-node
           :examples $ []
-          :schema $ quote $ Fn (List Number) (Map Tag Dynamic)
+          :schema $ quote $ Fn (List Number) PromptOptions
             Fn String $ -> Unit
             -> Unit
             :features :js-ffi
@@ -237,7 +244,7 @@
         'dashed-letter-pattern $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def dashed-letter-pattern (make-regex "|-([a-z])" |g)
           :examples $ []
-          :schema $ quote pointed-prompt.util.styles/RegexHost
+          :schema $ quote RegexHost
         'escape-html $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn escape-html (text)
             let
@@ -264,7 +271,7 @@
               (Number size)
                 if (.test pattern-non-dimension-props prop) (str size) (str size |px)
           :examples $ []
-          :schema $ quote $ Fn pointed-prompt.util.styles/CssValue String (-> String) (:features :js-ffi)
+          :schema $ quote $ Fn CssValue String (-> String) (:features :js-ffi)
         'hsl $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn hsl (h s l & more)
             let
@@ -278,22 +285,22 @@
           :code $ quote $ def layout-column
             {} (:display |flex) (:align-items |stretch) (:flex-direction |column)
           :examples $ []
-          :schema $ quote $ Map Tag pointed-prompt.util.styles/CssValue
+          :schema $ quote $ Map Tag CssValue
         'layout-expand $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def layout-expand
             {} (:flex 1) (:overflow :auto)
           :examples $ []
-          :schema $ quote $ Map Tag pointed-prompt.util.styles/CssValue
+          :schema $ quote $ Map Tag CssValue
         'layout-row $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def layout-row
             {} (:display |flex) (:align-items |stretch) (:flex-direction |row)
           :examples $ []
-          :schema $ quote $ Map Tag pointed-prompt.util.styles/CssValue
+          :schema $ quote $ Map Tag CssValue
         'make-regex $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn make-regex (pattern flags)
             unsafe-coerce (new js/RegExp pattern flags) RegexHost
           :examples $ []
-          :schema $ quote $ Fn String String (-> pointed-prompt.util.styles/RegexHost) (:features :js-ffi)
+          :schema $ quote $ Fn String String (-> RegexHost) (:features :js-ffi)
         'normalize-custom-style $ %{} 'CodeEntry
           :doc "|Keep the public custom-style fallback for non-CSS values at the options boundary."
           :code $ quote $ defn normalize-custom-style (value)
@@ -307,12 +314,12 @@
                     MapEntryDecision :keep key $ str item
           :examples $ []
           :schema $ quote $ Fn Dynamic
-            -> $ Map Tag pointed-prompt.util.styles/CssValue
+            -> $ Map Tag CssValue
         'pattern-non-dimension-props $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def pattern-non-dimension-props
             make-regex "|acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera" |i
           :examples $ []
-          :schema $ quote pointed-prompt.util.styles/RegexHost
+          :schema $ quote RegexHost
         'style->string $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn style->string (styles)
             ->
@@ -323,7 +330,7 @@
                   str style-name |: (escape-html v) |;
               join-string |
           :examples $ []
-          :schema $ quote $ Fn (Map Tag pointed-prompt.util.styles/CssValue) (-> String)
+          :schema $ quote $ Fn (Map Tag CssValue) (-> String)
         'uppercase-replacement $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn uppercase-replacement (matched letter offset source)
             .toUpperCase $ unsafe-coerce letter StringHost
