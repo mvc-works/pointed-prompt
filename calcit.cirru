@@ -69,28 +69,29 @@
         'decode-options $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn decode-options (raw)
             let
-                textarea? $ decode-map-as
-                  .unwrap-or (get raw :textarea?) false
-                  , 'Bool
+                textarea? $ match (get raw :textarea?)
+                  (:some value) (decode-map-as value 'Bool)
+                  (:none) false
                 style $ match (get raw :style)
                   (:some value) (normalize-custom-style value)
                   (:none) ({})
-                placeholder $ decode-map-as
-                  .unwrap-or (get raw :placeholder) |text...
-                  , 'String
-                initial $ decode-map-as
-                  .unwrap-or (get raw :initial) |
-                  , 'String
+                placeholder $ match (get raw :placeholder)
+                  (:some value) (decode-map-as value 'String)
+                  (:none) |text...
+                initial $ match (get raw :initial)
+                  (:some value) (decode-map-as value 'String)
+                  (:none) |
               PromptOptions :textarea? textarea? :style style :placeholder placeholder :initial initial
           :examples $ []
-          :schema $ quote $ Fn (Map Tag Dynamic) (-> PromptOptions)
+          :schema $ quote $ Fn (Map Tag V) (-> PromptOptions) (:generics V)
         'prompt-at! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn prompt-at! (position raw-options cb)
             prompt-at-typed! position (decode-options raw-options) cb
           :examples $ []
-          :schema $ quote $ Fn (List Number) (Map Tag Dynamic)
+          :schema $ quote $ Fn (List Number) (Map Tag V)
             Fn String $ -> Unit
             -> Unit
+            :generics V
             :features :js-ffi
         'prompt-at-typed! $ %{} 'CodeEntry (:doc "|Open a prompt with already typed options.")
           :code $ quote $ defn prompt-at-typed! (position options cb)
@@ -313,8 +314,9 @@
                   (:err _)
                     MapEntryDecision :keep key $ str item
           :examples $ []
-          :schema $ quote $ Fn Dynamic
+          :schema $ quote $ Fn Input
             -> $ Map Tag CssValue
+            :generics Input
         'pattern-non-dimension-props $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def pattern-non-dimension-props
             make-regex "|acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera" |i
