@@ -13,7 +13,7 @@
         'listen! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn listen! ()
             browser/add-event-listener! |click $ fn (event)
-              hint-fn $ Fn js-ffi.browser/EventHost $ -> Unit
+              hint-fn $ Fn browser/EventHost $ -> Unit
               let
                   mouse $ browser/mouse-event-host event
                 browser/console-log! $ str event
@@ -308,7 +308,7 @@
             filter-map-kv
               decode-map-as value $ Map Tag Dynamic
               fn (key item)
-                hint-fn $ Fn Tag Dynamic $ -> (MapEntryDecision Tag pointed-prompt.util.styles/CssValue)
+                hint-fn $ Fn Tag Dynamic $ -> (MapEntryDecision Tag CssValue)
                 match (try-decode-map-as item 'pointed-prompt.util.styles/CssValue)
                   (:ok css) (MapEntryDecision :keep key css)
                   (:err _)
