@@ -25,15 +25,15 @@
                     hint-fn $ Fn String $ -> Unit
                     browser/console-log! content
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi :state)
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! () (load-console-formatter!) (listen!) (println "|App Started") &unit
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :io :js-ffi :state)
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () (listen!) (println "|Code updated.") &unit
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :io :js-ffi :state)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns pointed-prompt.app.main
           :require
@@ -65,7 +65,7 @@
                 when (> duration 100) (browser/element-remove! root)
             , &unit
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi :state)
         'decode-options $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn decode-options (raw)
             let
@@ -92,7 +92,7 @@
             Fn String $ -> Unit
             -> Unit
             :generics V
-            :features :js-ffi
+            :features :js-ffi :state
         'prompt-at-typed! $ %{} 'CodeEntry (:doc "|Open a prompt with already typed options.")
           :code $ quote $ defn prompt-at-typed! (position options cb)
             let
@@ -177,7 +177,7 @@
           :schema $ quote $ Fn (List Number) PromptOptions
             Fn String $ -> Unit
             -> Unit
-            :features :js-ffi
+            :features :js-ffi :state
         'style-close $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def style-close
             {} (:margin-left 8) (:font-family "|Helvetica, sans-serif") (:font-size 24) (:font-weight 100)
