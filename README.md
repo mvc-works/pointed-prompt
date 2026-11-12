@@ -26,7 +26,7 @@ clear-prompt!
 
 ### 当前工具链与使用者影响
 
-使用正式 Calcit / `@calcit/procs` 0.41.0 和 JS FFI 0.2.13。升级后请同步依赖并重新生成 JS。
+使用正式 Calcit / `@calcit/procs` 0.41.1 和 JS FFI 0.2.13。升级后请同步依赖并重新生成 JS。
 
 `prompt-at!` 继续接收现有 Map 选项并保留默认值。调用方已知选项形状时，可以直接构造
 `PromptOptions` 并调用 `prompt-at-typed!`。具名选项要求提供四个字段，样式值支持
