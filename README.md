@@ -26,9 +26,9 @@ clear-prompt!
 
 ### 当前工具链与使用者影响
 
-使用正式 Calcit / `@calcit/procs` 0.42.0 和 JS FFI 0.2.13。升级后请同步依赖并重新生成 JS。
+使用正式 Calcit / `@calcit/procs` 0.42.1 和 JS FFI 0.2.13。升级后请同步依赖并重新生成 JS。
 
-`prompt-at!`、`prompt-at-typed!`、`clear-prompt!` 会读写全局 Ref，`Fn` schema 声明了 `:state`（0.42.0 效果边界）。调用它们的函数也需要声明 `:state`，否则 0.42 会给出 `W_STATE_FEATURE_REQUIRED` 提示。
+`prompt-at!`、`prompt-at-typed!`、`clear-prompt!` 会读写全局 Ref，`Fn` schema 声明了 `:state`（0.42.1 效果边界）。调用它们的函数也需要声明 `:state`，否则 0.42 会给出 `W_STATE_FEATURE_REQUIRED` 提示。
 
 `prompt-at!` 继续接收现有 Map 选项并保留默认值。调用方已知选项形状时，可以直接构造
 `PromptOptions` 并调用 `prompt-at-typed!`。具名选项要求提供四个字段，样式值支持

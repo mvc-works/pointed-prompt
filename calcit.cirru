@@ -305,14 +305,15 @@
         'normalize-custom-style $ %{} 'CodeEntry
           :doc "|Keep the public custom-style fallback for non-CSS values at the options boundary."
           :code $ quote $ defn normalize-custom-style (value)
-            filter-map-kv
-              decode-map-as value $ Map Tag Dynamic
-              fn (key item)
-                hint-fn $ Fn Tag Dynamic $ -> (MapEntryDecision Tag CssValue)
-                match (try-decode-map-as item 'pointed-prompt.util.styles/CssValue)
-                  (:ok css) (MapEntryDecision :keep key css)
-                  (:err _)
-                    MapEntryDecision :keep key $ str item
+            if (map? value)
+              filter-map-kv value $ fn (raw-key item)
+                let
+                    key $ decode-map-as raw-key 'Tag
+                  match (try-decode-map-as item 'pointed-prompt.util.styles/CssValue)
+                    (:ok css) (MapEntryDecision :keep key css)
+                    (:err _)
+                      MapEntryDecision :keep key $ str item
+              raise "|Expected a custom style map"
           :examples $ []
           :schema $ quote $ Fn Input
             -> $ Map Tag CssValue
