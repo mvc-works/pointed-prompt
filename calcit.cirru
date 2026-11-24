@@ -16,7 +16,6 @@
               hint-fn $ Fn browser/EventHost $ -> Unit
               let
                   mouse $ browser/mouse-event-host event
-                browser/console-log! $ str event
                 mouse .prevent-default!
                 , &unit $ prompt-at-typed!
                   [] (mouse :client-x) (mouse :client-y)
