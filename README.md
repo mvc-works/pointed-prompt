@@ -26,7 +26,7 @@ clear-prompt!
 
 ### 当前工具链与使用者影响
 
-候选 0.0.33 使用正式 Calcit / `@calcit/procs` 0.45.1 和 JS FFI 0.2.25；已发布 0.0.32 使用 JS FFI 0.2.24。升级后请同步依赖并重新生成 JS。
+候选 0.0.34 使用正式 Calcit / `@calcit/procs` 0.46.0 和 JS FFI 0.2.26；已发布 0.0.33 使用 Calcit 0.45.1 和 JS FFI 0.2.25。升级后请同步依赖并重新生成 JS。
 
 `prompt-at!`、`prompt-at-typed!`、`clear-prompt!` 会读写全局 Ref，`Fn` schema 声明了 `:state`（0.43.0 效果边界）。调用它们的函数也需要声明 `:state`，否则 0.42 会给出 `W_STATE_FEATURE_REQUIRED` 提示。
 
